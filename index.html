@@ -1,0 +1,2055 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' https://cryptoicons.org https://assets.coingecko.com https://coin-images.coingecko.com data: blob:; connect-src 'self' https://api.coingecko.com https://api.binance.com https://query1.finance.yahoo.com; frame-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests">
+  <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>FUENMAYOR - Dashboard Financiero</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  
+</head>
+<body>
+  <div id="app" style="min-height: 100vh; background: #07070f;">
+    <!-- HEADER -->
+      <div class="header">
+        <div class="logo-section">
+          <img src="images/DORADO%20SIN%20FONDO.png" alt="Logo Fuenmayor" class="logo-image">
+          <span class="logo-text">FUENMAYOR</span>
+        </div>
+      
+      <nav class="nav">
+        <button class="nav-btn active" data-tab="dashboard">
+          <span>◈</span> INICIO
+        </button>
+        <button class="nav-btn" data-tab="news">
+          <span>◎</span> NOTICIAS
+        </button>
+        <button class="nav-btn" data-tab="markets">
+          <span>◉</span> MERCADOS
+        </button>
+        <button class="nav-btn" data-tab="portfolio">
+          <span>◐</span> PORTAFOLIO
+        </button>
+        <button class="nav-btn" data-tab="reports">
+          <span>▣</span> INFORMES
+        </button>
+        <button class="nav-btn" data-tab="dictionary">
+          <span>◍</span> DICCIONARIO
+        </button>
+      </nav>
+      
+      <div class="header-status">
+        <span class="status-message" id="statusMessage"></span>
+        <div class="status-indicator">
+          <div class="status-dot live" id="statusDot"></div>
+          <span class="status-text" id="statusText">EN VIVO</span>
+        </div>
+        <span class="clock" id="clock"></span>
+      </div>
+    </div>
+
+    <!-- TICKER -->
+    <div class="ticker">
+      <div class="ticker-scroll" id="tickerScroll"></div>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="container">
+      <!-- DASHBOARD -->
+      <div id="dashboard-panel" class="content">
+        <div style="margin-bottom: 32px;">
+          <div class="section-header">
+            <div class="section-bar" style="background: linear-gradient(180deg, #f7931a, #a855f7);"></div>
+            <h2 class="section-title">MERCADO CRIPTO — EUROS</h2>
+            <div style="margin-left: auto;">
+              <button class="refresh-btn" id="refreshBtn">
+                <span class="refresh-icon" id="refreshIcon">⟳</span>
+                ACTUALIZAR
+              </button>
+            </div>
+          </div>
+          <div class="price-grid" id="priceGrid"></div>
+        </div>
+
+        <div class="dashboard-bottom-grid">
+          <div>
+            <div class="section-header">
+              <div class="section-bar" style="background: linear-gradient(180deg, #f0a500, #ff6b35);"></div>
+              <h2 class="section-title">ÚLTIMAS NOTICIAS</h2>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 10px;" id="dashboardNews"></div>
+          </div>
+          <div>
+            <div class="section-header">
+              <div class="section-bar" style="background: linear-gradient(180deg, #00a8ff, #00d084);"></div>
+              <h2 class="section-title">ÚLTIMO INFORME</h2>
+            </div>
+            <div id="dashboardLatestReport"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NOTICIAS -->
+      <div id="news-panel" class="content hidden">
+        <div class="section-header">
+          <div class="section-bar" style="background: linear-gradient(180deg, #f0a500, #ff6b35);"></div>
+          <h2 class="section-title lg">NOTICIAS</h2>
+          <div style="margin-left: auto; display: flex; gap: 10px; align-items: center;">
+            <button class="refresh-btn" id="refreshNewsBtn">
+              <span class="refresh-icon" id="refreshNewsIcon">⟳</span> ACTUALIZAR
+            </button>
+            <span class="news-source">↗ clic para ir a la fuente</span>
+          </div>
+        </div>
+        
+        <div style="display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;" id="newsCategoryFilter"></div>
+        
+        <div class="news-grid" id="newsGrid"></div>
+      </div>
+
+      <!-- MERCADOS -->
+      <div id="markets-panel" class="content hidden">
+        <div class="section-header">
+          <div class="section-bar" style="background: linear-gradient(180deg, #00d084, #00a8ff);"></div>
+          <h2 class="section-title lg">MERCADO CRIPTO — EUROS</h2>
+          <div style="margin-left: auto;">
+            <button class="refresh-btn" id="refreshBtn2">
+              <span class="refresh-icon" id="refreshIcon2">⟳</span>
+              ACTUALIZAR
+            </button>
+          </div>
+        </div>
+        
+        <div class="metrics-grid" id="metricsGrid"></div>
+        
+        <div class="table" id="marketsTable"></div>
+      </div>
+
+      <!-- PORTAFOLIO -->
+      <div id="portfolio-panel" class="content hidden">
+        <div class="section-header">
+          <div class="section-bar" style="background: linear-gradient(180deg, #a855f7, #6366f1);"></div>
+          <h2 class="section-title lg">MI PORTAFOLIO — EUROS</h2>
+          <div style="margin-left: auto; display: flex; gap: 10px; align-items: center;">
+            <button class="refresh-btn" id="refreshBtn3">
+              <span class="refresh-icon" id="refreshIcon3">⟳</span>
+              ACTUALIZAR
+            </button>
+            <button style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; padding: 9px 16px; border-radius: 6px; border: 1px solid #00d084; cursor: pointer; background: #00d08415; color: #00d084; display: flex; align-items: center; gap: 5px;" id="addAssetBtn">
+              <span style="font-size: 15px; line-height: 1;">+</span> AÑADIR
+            </button>
+          </div>
+        </div>
+        
+        <div class="metrics-grid" id="portfolioMetrics"></div>
+        
+        <div class="table" id="portfolioTable"></div>
+      </div>
+
+      <!-- INFORMES -->
+      <div id="reports-panel" class="content hidden">
+        <div class="section-header">
+          <div class="section-bar" style="background: linear-gradient(180deg, #00a8ff, #a855f7);"></div>
+          <h2 class="section-title lg">INFORMES</h2>
+        </div>
+
+        <div class="reports-category-switch">
+          <button class="reports-category-btn active" data-report-cat="monthly">Informes Mensuales</button>
+          <button class="reports-category-btn" data-report-cat="news">Informes de Noticias</button>
+          <button class="reports-category-btn" data-report-cat="coins">Informes de Monedas</button>
+        </div>
+
+        <section id="reports-monthly-section" class="reports-subsection">
+          <div class="reports-subheader">
+            <h3 class="reports-subtitle">Informes Mensuales</h3>
+            <button class="btn-small btn-edit report-upload-btn" id="uploadMonthlyPdfBtn" title="Subir PDF mensual">⤴</button>
+            <input type="file" id="monthlyPdfInput" accept="application/pdf" multiple class="hidden">
+          </div>
+          <div class="reports-grid" id="reportsMonthlyGrid"></div>
+          <div class="reports-pagination">
+            <button class="reports-page-btn" id="reportsMonthlyPrev">ANTERIOR</button>
+            <span class="reports-page-info" id="reportsMonthlyPageInfo">Página 1 de 1</span>
+            <button class="reports-page-btn" id="reportsMonthlyNext">SIGUIENTE</button>
+          </div>
+        </section>
+
+        <section id="reports-news-section" class="reports-subsection hidden">
+          <div class="reports-subheader">
+            <h3 class="reports-subtitle">Informes de Noticias</h3>
+            <button class="btn-small btn-edit report-upload-btn" id="uploadNewsPdfBtn" title="Subir PDF de noticias">⤴</button>
+            <input type="file" id="newsPdfInput" accept="application/pdf" multiple class="hidden">
+          </div>
+          <div class="reports-grid" id="reportsNewsGrid"></div>
+          <div class="reports-pagination">
+            <button class="reports-page-btn" id="reportsNewsPrev">ANTERIOR</button>
+            <span class="reports-page-info" id="reportsNewsPageInfo">Página 1 de 1</span>
+            <button class="reports-page-btn" id="reportsNewsNext">SIGUIENTE</button>
+          </div>
+        </section>
+
+        <section id="reports-coins-section" class="reports-subsection hidden">
+          <div class="reports-subheader">
+            <h3 class="reports-subtitle">Informes de Monedas</h3>
+            <button class="btn-small btn-edit report-upload-btn" id="uploadCoinsPdfBtn" title="Subir PDF de monedas">⤴</button>
+            <input type="file" id="coinsPdfInput" accept="application/pdf" multiple class="hidden">
+          </div>
+          <div class="reports-grid" id="reportsCoinsGrid"></div>
+          <div class="reports-pagination">
+            <button class="reports-page-btn" id="reportsCoinsPrev">ANTERIOR</button>
+            <span class="reports-page-info" id="reportsCoinsPageInfo">Página 1 de 1</span>
+            <button class="reports-page-btn" id="reportsCoinsNext">SIGUIENTE</button>
+          </div>
+        </section>
+      </div>
+
+      <!-- DICCIONARIO -->
+      <div id="dictionary-panel" class="content hidden">
+        <div class="section-header">
+          <div class="section-bar" style="background: linear-gradient(180deg, #f7931a, #00a8ff);"></div>
+          <h2 class="section-title lg">DICCIONARIO CRIPTO</h2>
+          <div id="dictionaryCount" style="margin-left: auto; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #888;"></div>
+        </div>
+        <div style="background: linear-gradient(180deg, #0d111d, #0a0f19); border: 1px solid #1f2a3f; border-radius: 12px; padding: 12px; margin-bottom: 16px;">
+          <input id="dictionarySearch" type="text" placeholder="Buscar término, categoría o definición..." style="width: 100%; background: #090d16; border: 1px solid #2b3650; border-radius: 10px; color: #e5e7eb; padding: 11px 12px; font-family: 'IBM Plex Sans', sans-serif; font-size: 14px;">
+          <div id="dictionaryCategoryFilter" style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;"></div>
+        </div>
+        <div id="dictionaryGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal" id="addAssetModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="section-bar" style="background: linear-gradient(180deg, #00d084, #00a8ff);"></div>
+        <div style="display:flex;flex-direction:column;">
+          <h3 class="modal-title">AÑADIR ACTIVO</h3>
+          <div class="modal-subtitle" id="modalSubtitle"></div>
+        </div>
+        <button class="modal-close" id="modalClose">✕</button>
+      </div>
+      
+      <div class="modal-hint">
+        Precio automático disponible para: BTC, ETH, LINK, SOL, AVAX, AAVE, INJ, ARB, UNI, DOT, CC, HYPE
+      </div>
+      
+      <div class="form-group full">
+        <div>
+          <label class="form-label">TICKER *</label>
+          <input type="text" class="form-input large" id="formTicker" placeholder="BTC">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <div>
+          <label class="form-label">UNIDADES *</label>
+          <input type="number" class="form-input" id="formUnits" placeholder="0.5">
+        </div>
+        <div>
+          <label class="form-label">COSTE TOTAL € *</label>
+          <input type="number" class="form-input" id="formCost" placeholder="38500">
+        </div>
+      </div>
+      
+      <div id="formError" style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #ff4d6d; margin-bottom: 12px; padding: 8px; background: #ff4d6d11; border-radius: 4px; display: none;"></div>
+      
+      <div class="form-actions">
+        <button class="btn-primary" id="confirmAddBtn">CONFIRMAR</button>
+        <button class="btn-secondary" id="cancelAddBtn">CANCELAR</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ────────────────────────────────────────────────────────────────────
+    // DATA
+    // ────────────────────────────────────────────────────────────────────
+    
+    const COIN_META = {
+      BTC:  { name: "Bitcoin",    sector: "Layer 1" },
+      ETH:  { name: "Ethereum",   sector: "Layer 1" },
+      LINK: { name: "Chainlink",  sector: "Oracle"  },
+      AAVE: { name: "AAVE",       sector: "DeFi"    },
+      SOL:  { name: "Solana",     sector: "Layer 1" },
+      AVAX: { name: "Avalanche",  sector: "Layer 1" },
+      INJ:  { name: "Injective",  sector: "DeFi"    },
+      ARB:  { name: "Arbitrum",   sector: "Layer 2" },
+      UNI:  { name: "Uniswap",    sector: "DeFi"    },
+      DOT:  { name: "Polkadot",   sector: "Layer 0" },
+      CC:   { name: "Canton Network", sector: "Infraestructura" },
+      HYPE: { name: "Hype",       sector: "Layer 1" },
+    };
+    
+    const TICKERS = Object.keys(COIN_META);
+
+    // ---- TradFi items for watchlist ----
+    const TRADFI_META = {
+      AAPL: { name: "Apple",        sector: "Tech" },
+      MSFT: { name: "Microsoft",    sector: "Tech" },
+      AMZN: { name: "Amazon",       sector: "E-commerce" },
+      TSLA: { name: "Tesla",        sector: "Auto" },
+      JPM:  { name: "JPMorgan",     sector: "Finance" },
+      GOOGL:{ name: "Alphabet",     sector: "Tech" },
+    };
+    const TRADFI_TICKERS = Object.keys(TRADFI_META);
+
+    const INDEX_META = {
+      '^GSPC':   { label: 'SPX' },
+      '^IXIC':   { label: 'NASDAQ' },
+      '^DJI':    { label: 'DOW' },
+      '^RUT':    { label: 'RUSSELL' },
+      '^VIX':    { label: 'VIX' },
+      '^GDAXI':  { label: 'DAX' },
+    };
+    const INDEX_TICKERS = Object.keys(INDEX_META);
+    
+    const PORTFOLIO_DEFAULTS = {
+      // `cost` is TOTAL cost in EUR per asset (not cost per unit)
+      BTC:  { units: 0.5,  cost: 19250 },
+      ETH:  { units: 5,    cost: 10250 },
+      LINK: { units: 200,  cost: 1760  },
+      SOL:  { units: 50,   cost: 4750  },
+      AVAX: { units: 80,   cost: 1760  },
+      AAVE: { units: 30,   cost: 2040  },
+    };
+                                            
+    // ────────────────────────────────────────────────────────────────────
+    //NOTICIAS CRIPTO//
+    // ────────────────────────────────────────────────────────────────────
+    
+    const CRYPTO_NEWS = [
+      {
+        id: 1,
+        category: "CHAINLINK",
+        time: "Hace 1d",
+        impact: "alto",
+        title: "Chainlink habilita despliegue de datos institucionales en Canton",
+        summary: "Chainlink se integra profundamente con la blockchain institucional Canton, impulsando datos on-chain, Proof of Reserve y capacidades de interoperabilidad, acelerando tokenización regulada y flujos financieros de alto volumen en mercados institucionales. La colaboración refuerza la adopción de oráculos de Chainlink como infraestructura crítica para DeFi y activos financieros tokenizados. ",
+        url: "https://www.crowdfundinsider.com/2026/03/264399-canton-chainlink-announce-data-deployment-partnership/" 
+     },
+       {
+        id: 2,
+        category: "CHAINLINK",
+        time: "Hace 5d",
+        impact: "medio",
+        title: "La SEC nombra a ex-ejecutivo de Chainlink en su Crypto Task Force",
+        summary: "La SEC designa a Taylor Lindman, ex asesor general de Chainlink Labs, como Chief Counsel de su Crypto Task Force, reforzando la experiencia técnica en regulación DeFi y tokenización.",
+        url: "https://cryptorank.io/news/feed/41301-u-s-sec-appoints-former-chainlink-executive-to-crypto-task-force"
+     },
+    {
+        id: 3,
+        category: "TOKENIZACIÓN",
+        time: "Hace 3w",
+        impact: "medio",
+        title: "Ondo integra oráculos de Chainlink para tokenizar acciones en DeFi",
+        summary: "Ondo Finance integra Data Feeds de Chainlink para soportar acciones y ETFs tokenizados en Ethereum, habilitando precios on-chain en tiempo real para mercados DeFi.",
+        url: "https://www.thestreet.com/crypto/markets/ondo-partners-with-chainlink-to-bring-tokenized-stocks-to-defi"
+    },
+    {
+        id: 4,
+        category: "TOKENIZACIÓN",
+        time: "Hace 1d",
+        impact: "alto",
+        title: "Chainlink ya opera en Canton para tokenización institucional a escala",
+        summary: "La integración en Canton permite datos continuos, prueba de reservas y valoración en tiempo real para activos financieros tokenizados dentro de entornos institucionales regulados.",
+        url: "https://www.prnewswire.com/news-releases/chainlink-now-live-on-canton-accelerating-institutional-grade-tokenization-at-scale-302696344.html"
+    },
+    {
+        id: 5,
+        category: "BITCOIN",
+        time: "Hace 4d",
+        impact: "medio",
+        title: "Informe proyecta a Bitcoin y DeFi como ejes del mercado 2026",
+        summary: "Un análisis reciente destaca que Bitcoin, stablecoins y activos tokenizados serán pilares del crecimiento cripto en 2026, consolidando la convergencia entre TradFi y DeFi.",
+        url: "https://dailycoin.com/binance-report-crypto-2025-2026-outlook/"
+    },
+    {
+    id: 6,
+    category: "DeFi",
+    time: "Hace 3d",
+    impact: "medio",
+    title: "Las finanzas agénticas emergen como nueva narrativa DeFi",
+    summary: "La combinación de inteligencia artificial y DeFi da lugar a sistemas automatizados de gestión de liquidez y capital que podrían redefinir el ecosistema financiero descentralizado.",
+    url: "https://es.marketscreener.com/noticias/finanzas-agenticas-c-mo-las-finanzas-descentralizadas-y-la-ia-reescriben-las-reglas-del-trading-ce7e5cd9d98ff720"
+  },
+  {
+    id: 7,
+    category: "REGULACIÓN",
+    time: "Hace 1w",
+    impact: "medio",
+    title: "Grupo DeFi presiona por marco regulatorio cripto más coherente",
+    summary: "Una agrupación estadounidense insta a reguladores a establecer reglas claras y consistentes para activos digitales, buscando equilibrar innovación y protección del inversor.",
+    url: "https://www.coindesk.com/es/policy/2026/02/13/u-s-based-defi-advocacy-group-urges-uk-fca-to-anchor-crypto-rules-to-unilateral-control"
+  },
+  {
+    id: 8,
+    category: "TOKENIZACIÓN",
+    time: "Hace 1m",
+    impact: "medio",
+    title: "Chainlink amplía data streams para acciones tokenizadas 24/5",
+    summary: "La red de oráculos expande su infraestructura para proveer precios continuos de acciones y ETFs estadounidenses, facilitando mercados tokenizados operativos fuera del horario tradicional.",
+    url: "https://observatorioblockchain.com/tokenizacion/chainlink-facilita-tokenizar-acciones-sin-romper-la-intermediacion/"
+  }
+    ];
+ 
+    const DICTIONARY_TERMS = [
+      { term: "Airdrop", category: "Distribución", definition: "Entrega gratuita de tokens a usuarios para incentivar adopción, comunidad o uso temprano de un protocolo." },
+      { term: "Altcoin", category: "Mercado", definition: "Cualquier criptomoneda distinta de Bitcoin." },
+      { term: "AMM", category: "DeFi", definition: "Automated Market Maker; modelo de exchange descentralizado con pools de liquidez y fórmula de precios." },
+      { term: "API", category: "Infraestructura", definition: "Interfaz que permite a software externo consultar datos o ejecutar acciones en un servicio." },
+      { term: "APR", category: "Rendimiento", definition: "Tasa anual simple de rendimiento sin capitalización compuesta." },
+      { term: "APY", category: "Rendimiento", definition: "Rendimiento anual con reinversión compuesta de intereses o recompensas." },
+      { term: "Arbitraje", category: "Trading", definition: "Estrategia para aprovechar diferencias de precio del mismo activo entre mercados." },
+      { term: "ASIC", category: "Minería", definition: "Hardware especializado para minar algoritmos concretos con alta eficiencia." },
+      { term: "ATH", category: "Mercado", definition: "All Time High; máximo histórico de precio de un activo." },
+      { term: "ATL", category: "Mercado", definition: "All Time Low; mínimo histórico de precio de un activo." },
+      { term: "Base Layer", category: "Tecnología", definition: "Capa principal de una blockchain donde se valida y liquida el estado final." },
+      { term: "Bear Market", category: "Mercado", definition: "Periodo prolongado de caídas de precio y sentimiento negativo." },
+      { term: "Bitcoin Dominance", category: "Métricas", definition: "Porcentaje de capitalización de Bitcoin sobre el total del mercado cripto." },
+      { term: "Block", category: "Tecnología", definition: "Conjunto de transacciones agrupadas y confirmadas en la cadena." },
+      { term: "Block Explorer", category: "Infraestructura", definition: "Herramienta web para consultar transacciones, bloques, contratos y direcciones." },
+      { term: "Block Time", category: "Métricas", definition: "Tiempo medio que tarda una red en producir un nuevo bloque." },
+      { term: "Blockchain", category: "Tecnología", definition: "Base de datos distribuida e inmutable mantenida por consenso entre nodos." },
+      { term: "Bridge", category: "Interoperabilidad", definition: "Protocolo para mover activos o mensajes entre diferentes blockchains." },
+      { term: "Bull Market", category: "Mercado", definition: "Periodo sostenido de subidas de precio y optimismo inversor." },
+      { term: "Burn", category: "Tokenómica", definition: "Destrucción permanente de tokens para reducir oferta circulante." },
+      { term: "CEX", category: "Mercado", definition: "Exchange centralizado custodial operado por una empresa." },
+      { term: "Circulating Supply", category: "Tokenómica", definition: "Cantidad de tokens disponibles públicamente en el mercado." },
+      { term: "Cold Wallet", category: "Custodia", definition: "Monedero fuera de línea, más resistente ante ataques remotos." },
+      { term: "Collateral", category: "DeFi", definition: "Activo depositado como garantía para obtener préstamo o emitir deuda." },
+      { term: "Consensus", category: "Tecnología", definition: "Mecanismo que permite a los nodos acordar el estado válido de la red." },
+      { term: "Custodia", category: "Custodia", definition: "Modelo en el que un tercero guarda tus claves y controla el acceso a fondos." },
+      { term: "DAO", category: "Gobernanza", definition: "Organización autónoma descentralizada gobernada por reglas y votos on-chain." },
+      { term: "dApp", category: "Aplicaciones", definition: "Aplicación descentralizada que usa contratos inteligentes como backend." },
+      { term: "DeFi", category: "Finanzas", definition: "Finanzas descentralizadas construidas sobre blockchain sin intermediarios tradicionales." },
+      { term: "DEX", category: "Mercado", definition: "Exchange descentralizado donde el usuario mantiene custodia de sus fondos." },
+      { term: "DYOR", category: "Riesgo", definition: "Do Your Own Research; recomendación de investigar por cuenta propia antes de invertir." },
+      { term: "EIP", category: "Desarrollo", definition: "Ethereum Improvement Proposal; propuesta formal de mejora para Ethereum." },
+      { term: "Emisión", category: "Tokenómica", definition: "Ritmo al que se crean nuevos tokens en un protocolo." },
+      { term: "ERC-20", category: "Estándares", definition: "Estándar de tokens fungibles en Ethereum." },
+      { term: "ERC-721", category: "Estándares", definition: "Estándar de tokens no fungibles (NFT) en Ethereum." },
+      { term: "ERC-1155", category: "Estándares", definition: "Estándar multiactivo para tokens fungibles y no fungibles." },
+      { term: "Escrow", category: "Pagos", definition: "Depósito en garantía que se libera cuando se cumplen condiciones acordadas." },
+      { term: "Faucet", category: "Onboarding", definition: "Servicio que distribuye pequeñas cantidades de tokens para pruebas." },
+      { term: "FDV", category: "Valoración", definition: "Fully Diluted Valuation; valoración asumiendo toda la oferta emitida." },
+      { term: "Fiat", category: "Finanzas", definition: "Moneda emitida por gobiernos, como EUR o USD." },
+      { term: "FOMO", category: "Psicología", definition: "Fear Of Missing Out; miedo a quedarse fuera de una subida." },
+      { term: "Fork", category: "Tecnología", definition: "Cambio de reglas del protocolo; puede ser compatible o no con versiones previas." },
+      { term: "FUD", category: "Psicología", definition: "Fear, Uncertainty and Doubt; narrativa de miedo que afecta sentimiento de mercado." },
+      { term: "Gas", category: "Costes", definition: "Unidad de coste computacional para ejecutar transacciones o contratos." },
+      { term: "Gas Fee", category: "Costes", definition: "Comisión pagada a validadores para incluir operaciones en la red." },
+      { term: "Genesis Block", category: "Tecnología", definition: "Primer bloque de una blockchain." },
+      { term: "Governance Token", category: "Gobernanza", definition: "Token que otorga poder de voto sobre decisiones del protocolo." },
+      { term: "Halving", category: "Bitcoin", definition: "Evento programado que reduce a la mitad la recompensa por bloque en Bitcoin." },
+      { term: "Hash", category: "Criptografía", definition: "Función que convierte datos en una huella digital de longitud fija." },
+      { term: "Hot Wallet", category: "Custodia", definition: "Monedero conectado a internet, cómodo pero con mayor exposición a riesgo." },
+      { term: "ICO", category: "Financiación", definition: "Initial Coin Offering; venta temprana de tokens para financiar un proyecto." },
+      { term: "Impermanent Loss", category: "DeFi", definition: "Pérdida relativa de un proveedor de liquidez frente a mantener los activos por separado." },
+      { term: "KYC", category: "Regulación", definition: "Know Your Customer; verificación de identidad exigida por regulación." },
+      { term: "Layer 1", category: "Arquitectura", definition: "Blockchain base que ejecuta consenso y seguridad principal." },
+      { term: "Layer 2", category: "Arquitectura", definition: "Solución que escala una capa 1 con menor coste y mayor velocidad." },
+      { term: "Liquidity", category: "Mercado", definition: "Capacidad de comprar o vender sin mover significativamente el precio." },
+      { term: "Liquidity Pool", category: "DeFi", definition: "Reserva de activos usada por AMMs para facilitar intercambios." },
+      { term: "Liquidación", category: "Riesgo", definition: "Cierre forzoso de una posición apalancada al no cumplir margen requerido." },
+      { term: "Mainnet", category: "Infraestructura", definition: "Red blockchain de producción con valor real." },
+      { term: "Market Cap", category: "Valoración", definition: "Capitalización de mercado; precio actual multiplicado por oferta circulante." },
+      { term: "MEV", category: "Infraestructura", definition: "Maximal Extractable Value; valor capturable reordenando o insertando transacciones." },
+      { term: "Merkle Tree", category: "Criptografía", definition: "Estructura de hashes que permite verificar grandes conjuntos de datos eficientemente." },
+      { term: "Mining", category: "Minería", definition: "Proceso de asegurar redes Proof of Work y recibir recompensas." },
+      { term: "Mint", category: "Tokenómica", definition: "Creación de nuevos tokens o NFT." },
+      { term: "Multisig", category: "Custodia", definition: "Esquema de firma múltiple que requiere varias claves para autorizar movimientos." },
+      { term: "NFT", category: "Activos Digitales", definition: "Token no fungible que representa un activo único verificable en blockchain." },
+      { term: "Nodo", category: "Infraestructura", definition: "Equipo que participa en la red verificando y propagando datos." },
+      { term: "Nonce", category: "Tecnología", definition: "Número usado una sola vez para ordenar transacciones o resolver pruebas de trabajo." },
+      { term: "Off-chain", category: "Arquitectura", definition: "Actividad o dato procesado fuera de la cadena principal." },
+      { term: "On-chain", category: "Arquitectura", definition: "Actividad registrada directamente en la blockchain." },
+      { term: "Oracle", category: "Infraestructura", definition: "Servicio que lleva datos externos verificables a contratos inteligentes." },
+      { term: "Order Book", category: "Trading", definition: "Libro de órdenes de compra/venta ordenadas por precio." },
+      { term: "P2P", category: "Pagos", definition: "Intercambio directo entre pares sin intermediario central." },
+      { term: "Peg", category: "Stablecoins", definition: "Paridad objetivo de un activo respecto a otro, por ejemplo 1:1 con USD." },
+      { term: "Permissionless", category: "Principios", definition: "Sistema abierto que permite participar sin autorización previa." },
+      { term: "Private Key", category: "Custodia", definition: "Clave secreta que otorga control criptográfico sobre los fondos." },
+      { term: "Proof of Stake", category: "Consenso", definition: "Modelo de consenso basado en validadores que bloquean capital en stake." },
+      { term: "Proof of Work", category: "Consenso", definition: "Modelo de consenso basado en trabajo computacional para minar bloques." },
+      { term: "Rug Pull", category: "Fraude", definition: "Salida maliciosa de un equipo que drena liquidez o abandona el proyecto." },
+      { term: "RWA", category: "Tokenización", definition: "Real World Assets; activos del mundo real representados en blockchain." },
+      { term: "Satoshi", category: "Bitcoin", definition: "Unidad mínima de Bitcoin; 1 BTC equivale a 100 millones de satoshis." },
+      { term: "Seed Phrase", category: "Custodia", definition: "Frase de recuperación que permite restaurar un monedero." },
+      { term: "Sharding", category: "Escalabilidad", definition: "División del estado o procesamiento de la red en fragmentos para escalar." },
+      { term: "Slippage", category: "Trading", definition: "Diferencia entre precio esperado y precio ejecutado en una orden." },
+      { term: "Smart Contract", category: "Tecnología", definition: "Programa autónomo en blockchain que ejecuta reglas de forma automática." },
+      { term: "Stablecoin", category: "Activos", definition: "Token diseñado para mantener baja volatilidad respecto a un activo de referencia." },
+      { term: "Staking", category: "Rendimiento", definition: "Bloqueo de tokens para participar en consenso y recibir recompensas." },
+      { term: "Stop Loss", category: "Trading", definition: "Orden que limita pérdidas cerrando posición al alcanzar un precio definido." },
+      { term: "TVL", category: "Métricas", definition: "Total Value Locked; valor total bloqueado en un protocolo DeFi." },
+      { term: "Token", category: "Activos", definition: "Unidad digital emitida sobre una blockchain con funciones específicas." },
+      { term: "Tokenómica", category: "Tokenómica", definition: "Diseño económico de un token: oferta, demanda, incentivos y utilidades." },
+      { term: "Tokenización", category: "Tokenización", definition: "Proceso de representar activos o derechos en forma de tokens." },
+      { term: "Whitelist", category: "Acceso", definition: "Lista de direcciones o usuarios autorizados para una acción concreta." },
+      { term: "Yield Farming", category: "DeFi", definition: "Estrategia para mover liquidez entre protocolos buscando mayor rendimiento." },
+      { term: "Zero Knowledge Proof", category: "Criptografía", definition: "Prueba que demuestra una afirmación sin revelar la información subyacente." },
+      { term: "Asset Servicing", category: "Tokenización", definition: "Gestión operativa de activos tokenizados: eventos corporativos, pagos y reconciliación." },
+      { term: "Cap Table Tokenizada", category: "Tokenización", definition: "Registro de accionistas representado o sincronizado mediante tokens en blockchain." },
+      { term: "Cartera Tokenizada", category: "Tokenización", definition: "Conjunto de activos del mundo real representados digitalmente en tokens." },
+      { term: "CSD", category: "Tokenización", definition: "Central Securities Depository; infraestructura tradicional de custodia y liquidación de valores." },
+      { term: "Delivery versus Payment (DvP)", category: "Tokenización", definition: "Liquidación donde entrega del activo y pago ocurren simultáneamente para reducir riesgo." },
+      { term: "Fractional Ownership", category: "Tokenización", definition: "Propiedad fraccionada de un activo mediante tokens divisibles." },
+      { term: "ISIN Digital", category: "Tokenización", definition: "Identificador de instrumento financiero aplicado a emisiones tokenizadas reguladas." },
+      { term: "Libro Registro On-chain", category: "Tokenización", definition: "Registro de titularidad mantenido directamente en blockchain con trazabilidad completa." },
+      { term: "Mercado Primario Tokenizado", category: "Tokenización", definition: "Emisión inicial de activos tokenizados para captar capital." },
+      { term: "Mercado Secundario Tokenizado", category: "Tokenización", definition: "Compraventa posterior de tokens emitidos en plataformas compatibles." },
+      { term: "NAV On-chain", category: "Tokenización", definition: "Valor liquidativo de un fondo calculado y/o publicado con integración blockchain." },
+      { term: "On-chain Transfer Agent", category: "Tokenización", definition: "Rol que administra titularidad y transferencias de valores tokenizados." },
+      { term: "Permissioned Token", category: "Tokenización", definition: "Token con restricciones de acceso, tenencia o transferencia por cumplimiento normativo." },
+      { term: "Programmable Compliance", category: "Tokenización", definition: "Reglas regulatorias codificadas en smart contracts para ejecución automática." },
+      { term: "Real-Time Settlement", category: "Tokenización", definition: "Liquidación prácticamente instantánea frente a ciclos T+1/T+2 tradicionales." },
+      { term: "Registry Node", category: "Tokenización", definition: "Nodo especializado para registrar y auditar movimientos de activos tokenizados." },
+      { term: "Security Token", category: "Tokenización", definition: "Token que representa un valor financiero sujeto a regulación de mercados de capitales." },
+      { term: "Settlement Finality", category: "Tokenización", definition: "Momento en que una liquidación se considera irrevocable." },
+      { term: "SPV Tokenizado", category: "Tokenización", definition: "Vehículo de propósito especial cuya participación se representa mediante tokens." },
+      { term: "Tokenized Bond", category: "Tokenización", definition: "Bono emitido en formato token con cupones y vencimiento gestionables on-chain." },
+      { term: "Tokenized Equity", category: "Tokenización", definition: "Representación tokenizada de acciones o participaciones de una entidad." },
+      { term: "Transfer Restrictions", category: "Tokenización", definition: "Controles de transferencia por jurisdicción, tipo de inversor o listas permitidas." },
+      { term: "Wallet Whitelisting", category: "Tokenización", definition: "Aprobación previa de direcciones autorizadas para operar con un token regulado." }
+    ];
+
+    const NEWS_CATEGORY_ORDER = ["CHAINLINK", "TOKENIZACIÓN", "BITCOIN", "DeFi", "REGULACIÓN"];
+
+
+    // ────────────────────────────────────────────────────────────────────
+    // STATE
+    // ────────────────────────────────────────────────────────────────────
+    
+    let app = {
+      currentTab: 'dashboard',
+      loading: false,
+      prices: {},
+      lastUpdate: null,
+      assets: [
+        { ticker: 'BTC', ...PORTFOLIO_DEFAULTS.BTC },
+        { ticker: 'ETH', ...PORTFOLIO_DEFAULTS.ETH },
+        { ticker: 'LINK', ...PORTFOLIO_DEFAULTS.LINK },
+        { ticker: 'SOL', ...PORTFOLIO_DEFAULTS.SOL },
+        { ticker: 'AVAX', ...PORTFOLIO_DEFAULTS.AVAX },
+        { ticker: 'AAVE', ...PORTFOLIO_DEFAULTS.AAVE },
+      ],
+      tradfiPrices: {},
+      indexPrices: {},
+      newsFilter: 'TODOS',
+      editingTicker: null,
+      reports: {
+        active: 'monthly',
+        monthly: [],
+        news: [],
+        coins: [],
+        page: { monthly: 0, news: 0, coins: 0 },
+      },
+      dictionaryQuery: '',
+      dictionaryCategory: 'TODAS',
+      // list of coins used by the markets panel (top 25 by market cap)
+      marketList: [],
+    };
+    
+    // ────────────────────────────────────────────────────────────────────
+    // HELPERS
+    // ────────────────────────────────────────────────────────────────────
+    
+    const fmt = (n, dec = 2) => {
+      if (n == null || isNaN(n)) return "—";
+      return n.toLocaleString("es-ES", { minimumFractionDigits: dec, maximumFractionDigits: dec });
+    };
+    
+    const PORTFOLIO_STORAGE_KEY = "fuenmayor_portfolio_assets_v1";
+    const MAX_PDF_SIZE_BYTES = 20 * 1024 * 1024;
+    const fmtEur = (n, dec = 2) => n == null ? "—" : `${fmt(n, dec)} €`;
+    const fmtUsd = (n, dec = 2) => n == null ? "—" : `$${fmt(n, dec)}`;
+    const REPORTS_PAGE_SIZE = 16;
+    const REPORTS_STATIC_PATHS = {
+      monthly: [
+        "PDF/INFORMES MENSUALES/2024/INFORME MENSUAL DICIEMBRE 2024.pdf",
+        "PDF/INFORMES MENSUALES/2024/INFORME MENSUAL NOVIEMBRE 2024.pdf",
+        "PDF/INFORMES MENSUALES/2025/INFORME MENSUAL ABRIL 2025.pdf",
+        "PDF/INFORMES MENSUALES/2025/INFORME MENSUAL AGOSTO 2025.pdf",
+        "PDF/INFORMES MENSUALES/2025/INFORME MENSUAL DICIEMBRE 2025.pdf",
+        "PDF/INFORMES MENSUALES/2025/INFORME MENSUAL ENERO 2025.pdf",
+        "PDF/INFORMES MENSUALES/2025/INFORME MENSUAL FEBRERO 2025.pdf",
+        "PDF/INFORMES MENSUALES/2025/INFORME MENSUAL JULIO 2025.pdf",
+        "PDF/INFORMES MENSUALES/2025/INFORME MENSUAL JUNIO 2025.pdf",
+        "PDF/INFORMES MENSUALES/2025/INFORME MENSUAL MARZO 2025.pdf",
+        "PDF/INFORMES MENSUALES/2025/INFORME MENSUAL MAYO 2025.pdf",
+        "PDF/INFORMES MENSUALES/2025/INFORME MENSUAL NOVIEMBRE 2025 ACTUALIZADO.pdf",
+        "PDF/INFORMES MENSUALES/2025/INFORME MENSUAL NOVIEMBRE 2025.pdf",
+        "PDF/INFORMES MENSUALES/2025/INFORME MENSUAL OCTUBRE 2025.pdf",
+        "PDF/INFORMES MENSUALES/2025/INFORME MENSUAL SEPTIEMBRE 2025.pdf",
+        "PDF/INFORMES MENSUALES/2026/ENERO 2026.pdf",
+        "PDF/INFORMES MENSUALES/2026/FEBRERO 2026.pdf",
+      ],
+      news: [
+        "PDF/Noticias Web 3/Consensus 2024.pdf",
+        "PDF/Noticias Web 3/CONSENSUS 2025 TORONTO.pdf",
+        "PDF/Noticias Web 3/Cripto Summit 2025.pdf",
+        "PDF/Noticias Web 3/Economía del Ecosistema Chainlink.pdf",
+        "PDF/Noticias Web 3/ERC-3643.pdf",
+        "PDF/Noticias Web 3/Fallo en CrowStrike.pdf",
+        "PDF/Noticias Web 3/Futuro de la Infraetructura Financiera Mundial.pdf",
+        "PDF/Noticias Web 3/GUERRA COMERCIAL.pdf",
+        "PDF/Noticias Web 3/Informe de situacion AGOSTO 2024.pdf",
+        "PDF/Noticias Web 3/INTEROPERABILIDAD ANZ-HK (AMC).pdf",
+        "PDF/Noticias Web 3/INVERTIR EN BLOCKCHAIN 2026.pdf",
+        "PDF/Noticias Web 3/La Plataforma de Oráculos Impulsando la Tokenización Institucional.pdf",
+        "PDF/Noticias Web 3/Noticias Web 3  Julio 2024.pdf",
+        "PDF/Noticias Web 3/Noticias web 3 Abril 2024.pdf",
+        "PDF/Noticias Web 3/PRECIO DEL TOKEN.pdf",
+        "PDF/Noticias Web 3/Reporte Interno eHDK programa piloto.pdf",
+        "PDF/Noticias Web 3/RESUMEN ACTUALIDAD DEC 2024.pdf",
+        "PDF/Noticias Web 3/SIBOS 2025.pdf",
+        "PDF/Noticias Web 3/SIBOS Y SMARTCON 2024.pdf",
+        "PDF/Noticias Web 3/SMARTCON 2025.pdf",
+        "PDF/Noticias Web 3/Sony Soneium.pdf",
+      ],
+      coins: [
+        "PDF/informesmonedas/Análisis Avalanche.pdf",
+        "PDF/informesmonedas/Análisis Bitcoin.pdf",
+        "PDF/informesmonedas/Análisis Chainlink.pdf",
+        "PDF/informesmonedas/Análisis Ethereum.pdf",
+        "PDF/informesmonedas/Análisis Riple.pdf",
+        "PDF/informesmonedas/Análisis Solana.pdf",
+        "PDF/informesmonedas/Canton Network.pdf",
+      ],
+    };
+    
+    const fmtPct = (n) => n == null ? "—" : `${n >= 0 ? "+" : ""}${n.toFixed(2)}%`;
+    const SAFE_TICKER_RX = /^[A-Z0-9._-]{1,15}$/;
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function escapeAttr(value) {
+      return escapeHtml(value).replace(/`/g, '&#96;');
+    }
+
+    function safeHttpUrl(value) {
+      if (typeof value !== 'string' || value.trim() === '') return null;
+      try {
+        const url = new URL(value, window.location.href);
+        if (url.protocol !== 'http:' && url.protocol !== 'https:') return null;
+        return url.href;
+      } catch {
+        return null;
+      }
+    }
+
+    function safeReportUrl(value) {
+      if (typeof value !== 'string' || value.trim() === '') return null;
+      try {
+        const url = new URL(value, window.location.href);
+        const isHttp = url.protocol === 'http:' || url.protocol === 'https:';
+        const isBlob = url.protocol === 'blob:';
+        const isFile = url.protocol === 'file:';
+        if (!isHttp && !isBlob && !isFile) return null;
+        return url.href;
+      } catch {
+        return null;
+      }
+    }
+
+    function buildSymbolFallbackIcon(symbol) {
+      const safeSym = escapeHtml(String(symbol || '?').slice(0, 5).toUpperCase());
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><rect width="100%" height="100%" rx="6" fill="#111827"/><text x="50%" y="56%" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#f3f4f6">${safeSym}</text></svg>`;
+      return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+    }
+
+    function normalizeTicker(value) {
+      const ticker = String(value ?? '').toUpperCase().trim();
+      if (!SAFE_TICKER_RX.test(ticker)) return null;
+      if (ticker === 'CANTO') return 'CC';
+      return ticker;
+    }
+
+    function normalizeSearchText(value) {
+      return String(value ?? '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+    }
+
+    function parseNewsAgeMinutes(timeLabel) {
+      const txt = String(timeLabel || '').toLowerCase().replace(/\s+/g, '');
+      const m = txt.match(/hace(\d+)([a-z]+)/);
+      if (!m) return Number.MAX_SAFE_INTEGER;
+      const value = Number(m[1]);
+      const unit = m[2];
+      if (!Number.isFinite(value)) return Number.MAX_SAFE_INTEGER;
+      if (unit.startsWith('m') && unit !== 'min') return value * 43200; // mes(es)
+      if (unit.startsWith('w') || unit.startsWith('s')) return value * 10080; // week/semana
+      if (unit.startsWith('d')) return value * 1440;
+      if (unit.startsWith('h')) return value * 60;
+      if (unit.startsWith('min')) return value;
+      return Number.MAX_SAFE_INTEGER;
+    }
+
+    function fmtEurSmart(n) {
+      if (n == null || !Number.isFinite(n)) return "—";
+      const abs = Math.abs(n);
+      if (abs >= 1) return fmtEur(n, 2);
+      if (abs >= 0.01) return fmtEur(n, 4);
+      return fmtEur(n, 6);
+    }
+
+    function inferNewsCategory(newsItem) {
+      const raw = String(newsItem?.category || '').trim();
+      const normalized = normalizeSearchText(raw).toUpperCase();
+      const text = normalizeSearchText(`${newsItem?.title || ''} ${newsItem?.summary || ''}`);
+
+      if (text.includes('chainlink')) return 'CHAINLINK';
+      if (text.includes('tokeniz') || text.includes('rwa') || text.includes('asset servicing') || text.includes('tokenized')) return 'TOKENIZACIÓN';
+      if (text.includes('bitcoin') || text.includes('btc')) return 'BITCOIN';
+      if (text.includes('defi')) return 'DeFi';
+      if (text.includes('regul') || text.includes('sec') || text.includes('fca')) return 'REGULACIÓN';
+
+      if (normalized === 'CHAINLINK') return 'CHAINLINK';
+      if (normalized === 'TOKENIZACION') return 'TOKENIZACIÓN';
+      if (normalized === 'BITCOIN') return 'BITCOIN';
+      if (normalized === 'DEFI') return 'DeFi';
+      if (normalized === 'REGULACION') return 'REGULACIÓN';
+      return 'REGULACIÓN';
+    }
+
+    function getSortedNews(items) {
+      return [...items].sort((a, b) => {
+        const ac = NEWS_CATEGORY_ORDER.indexOf(inferNewsCategory(a));
+        const bc = NEWS_CATEGORY_ORDER.indexOf(inferNewsCategory(b));
+        const ai = ac === -1 ? 999 : ac;
+        const bi = bc === -1 ? 999 : bc;
+        if (ai !== bi) return ai - bi;
+        return parseNewsAgeMinutes(a.time) - parseNewsAgeMinutes(b.time);
+      });
+    }
+
+    function openExternalUrl(rawUrl) {
+      const safeUrl = safeHttpUrl(rawUrl);
+      if (!safeUrl) return;
+      window.open(safeUrl, '_blank', 'noopener,noreferrer');
+    }
+
+    function parseFlexibleNumber(value) {
+      if (typeof value === 'number') return Number.isFinite(value) ? value : NaN;
+      if (value == null) return NaN;
+      let str = String(value).trim();
+      if (!str) return NaN;
+      str = str.replace(/\s+/g, '');
+      const hasComma = str.includes(',');
+      const hasDot = str.includes('.');
+
+      if (hasComma && hasDot) {
+        const commaLast = str.lastIndexOf(',');
+        const dotLast = str.lastIndexOf('.');
+        const decimalSep = commaLast > dotLast ? ',' : '.';
+        const thousandSep = decimalSep === ',' ? '.' : ',';
+        str = str.replaceAll(thousandSep, '');
+        if (decimalSep === ',') str = str.replace(',', '.');
+      } else if (hasComma) {
+        str = str.replace(',', '.');
+      }
+
+      return Number(str);
+    }
+
+    function normalizePortfolioAsset(asset) {
+      if (!asset || typeof asset !== 'object') return null;
+      const ticker = normalizeTicker(asset.ticker);
+      const units = parseFlexibleNumber(asset.units);
+      const cost = parseFlexibleNumber(asset.cost);
+      if (!ticker || !Number.isFinite(units) || !Number.isFinite(cost) || units <= 0 || cost <= 0) return null;
+      return { ticker, units, cost };
+    }
+
+    function loadPortfolioFromStorage() {
+      try {
+        const raw = localStorage.getItem(PORTFOLIO_STORAGE_KEY);
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return;
+        const clean = parsed.map(normalizePortfolioAsset).filter(Boolean);
+        if (clean.length > 0) {
+          app.assets = clean;
+        }
+      } catch (err) {
+        console.warn('No se pudo cargar portfolio desde localStorage:', err);
+      }
+    }
+
+    function savePortfolioToStorage() {
+      try {
+        const payload = app.assets.map(a => ({ ticker: a.ticker, units: a.units, cost: a.cost }));
+        localStorage.setItem(PORTFOLIO_STORAGE_KEY, JSON.stringify(payload));
+      } catch (err) {
+        console.warn('No se pudo guardar portfolio en localStorage:', err);
+      }
+    }
+
+    function calcRoiPct(valueEur, totalCostEur) {
+      if (valueEur == null || !Number.isFinite(valueEur) || !Number.isFinite(totalCostEur) || totalCostEur <= 0) {
+        return null;
+      }
+      return ((valueEur - totalCostEur) / totalCostEur) * 100;
+    }
+
+    function buildRoiSeries(currentPrice, change24hPct, avgCostPerUnit, points = 14) {
+      if (!Number.isFinite(currentPrice) || !Number.isFinite(avgCostPerUnit) || avgCostPerUnit <= 0) return null;
+
+      const size = Math.max(3, points);
+      const ch = Number.isFinite(change24hPct) ? change24hPct : 0;
+      const denom = 1 + (ch / 100);
+      const prevPrice = denom > 0 ? (currentPrice / denom) : currentPrice;
+      const endRoi = ((currentPrice - avgCostPerUnit) / avgCostPerUnit) * 100;
+      const refStart = ((prevPrice - avgCostPerUnit) / avgCostPerUnit) * 100;
+
+      // Keep directional consistency: negative ROI trends down, positive ROI trends up.
+      let startRoi;
+      if (endRoi < 0) {
+        startRoi = Math.max(refStart, endRoi * 0.35);
+      } else if (endRoi > 0) {
+        startRoi = Math.min(refStart, endRoi * 0.35);
+      } else {
+        startRoi = refStart;
+      }
+
+      const series = [];
+      for (let i = 0; i < size; i++) {
+        const t = i / (size - 1);
+        const trend = startRoi + (endRoi - startRoi) * t;
+        const wave = Math.sin((i + 1) * 0.9) * 0.12 + Math.cos((i + 2) * 0.5) * 0.08;
+        series.push(trend + wave);
+      }
+      series[0] = startRoi;
+      series[size - 1] = endRoi;
+      return series;
+    }
+    
+    // Genera sparkline de N puntos (por defecto 7 días)
+    function makeSparkline(price, change24h, len = 7) {
+      if (!price) return null;
+      const ch = (change24h ?? 0) / 100;
+      const pts = [price];
+      const seed = (price * 1000) % 9999;
+      const r = (i) => ((Math.sin(seed + i * 127.1) * Math.cos(i * 311.7) + 1) / 2);
+      for (let i = 1; i < len; i++) {
+        const noise = (r(i) - 0.5) * 0.018;
+        const step = -(ch / Math.max(1, len - 1));
+        pts.unshift(pts[0] * (1 + step + noise));
+      }
+      return pts;
+    }
+    
+    // MiniChart SVG
+    // default size for the smaller charts used across the app
+    const MINI_W = 60, MINI_H = 22;
+    // larger, more detailed charts for portfolio
+    const DETAIL_W = 110, DETAIL_H = 36;
+    function MiniChart(pts, up, w = 80, h = 28) {
+      if (!pts || pts.length < 2) return '<svg width="' + w + '" height="' + h + '"></svg>';
+      const max = Math.max(...pts), min = Math.min(...pts), range = max - min || 1;
+      const px = 2;
+      const coords = pts.map((v, i) => [
+        (i / (pts.length - 1)) * w,
+        h - px - ((v - min) / range) * (h - px * 2),
+      ]);
+      const d = "M" + coords.map(c => c.join(",")).join("L");
+      const area = d + `L${w},${h}L0,${h}Z`;
+      const color = up ? "#00d084" : "#ff4d6d";
+      return `<svg width="${w}" height="${h}" style="overflow: visible; display: block; flex-shrink: 0;">
+        <path d="${area}" fill="${color}" fill-opacity="0.1" />
+        <path d="${d}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" />
+      </svg>`;
+    }
+    
+    // ────────────────────────────────────────────────────────────────────
+    // RENDER FUNCTIONS
+    // ────────────────────────────────────────────────────────────────────
+    
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('clock').textContent = now.toLocaleTimeString('es-ES');
+    }
+    
+    function renderTicker() {
+      const scroll = document.getElementById('tickerScroll');
+
+      const cryptoToShow = ['BTC', 'ETH', 'SOL', 'AAVE', 'LINK', 'AVAX'];
+      const cryptoItems = cryptoToShow.map(t => {
+        const d = app.prices[t];
+        const up = d ? d.change24h >= 0 : true;
+        return {
+          lbl: `${t}/EUR`,
+          val: d ? fmtEur(d.eur) : "···",
+          ch: d ? fmtPct(d.change24h) : null,
+          up
+        };
+      });
+
+      const indexItems = INDEX_TICKERS.map(sym => {
+        const d = app.indexPrices[sym];
+        const up = d ? d.change24h >= 0 : true;
+        return {
+          lbl: INDEX_META[sym].label,
+          val: d ? fmt(d.value, 2) : "···",
+          ch: d ? fmtPct(d.change24h) : null,
+          up
+        };
+      });
+
+      const items = [...cryptoItems, ...indexItems];
+
+      // triple items for smoother seamless loop
+      scroll.innerHTML = [...items, ...items, ...items].map((it, i) => `
+        <span class="ticker-item">
+          <span class="ticker-label">${it.lbl}</span>
+          <span class="ticker-price">${it.val}</span>
+          ${it.ch ? `<span class="ticker-change ${it.up ? 'up' : 'down'}">${it.up ? "▲" : "▼"} ${it.ch}</span>` : ''}
+        </span>
+      `).join('' );
+    }
+    function renderDashboard() {
+      renderPriceGrid('priceGrid');
+      renderDashboardNews();
+      renderDashboardLatestReport();
+    }
+
+    function resolveTickerLogo(ticker) {
+      const t = String(ticker || '').toUpperCase();
+      const fromMarket = app.marketList.find(m => String(m.symbol || '').toUpperCase() === t)?.image;
+      return safeHttpUrl(fromMarket) || `https://cryptoicons.org/api/icon/${t.toLowerCase()}/64`;
+    }
+    
+    function renderPriceGrid(containerId) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = TICKERS.map(t => {
+        const data = app.prices[t];
+        const up = data ? data.change24h >= 0 : true;
+        const pts = data ? makeSparkline(data.eur, data.change24h) : null;
+        const logoSrc = resolveTickerLogo(t);
+        
+        return `
+          <div class="price-card ${!up ? 'down' : ''}">
+            <div class="price-label"><img src="${escapeAttr(logoSrc)}" data-fallback-src="${escapeAttr(buildSymbolFallbackIcon(t))}" alt="${escapeAttr(t)}" class="price-logo" loading="lazy">${t}/EUR · 7d</div>
+            ${data ? `
+              <div class="price-value">${fmtEurSmart(data.eur)}</div>
+              <div class="price-change ${up ? 'up' : 'down'}'>${up ? "▲" : "▼"} ${fmtPct(data.change24h)} <span class="time">24h</span></div>
+            ` : `
+              <div class="skeleton" style="width: 80%;"></div>
+              <div class="skeleton sm"></div>
+            `}
+            ${data ? `<div class="price-chart-change ${up ? 'up' : 'down'}">${fmtPct(data.change24h)}</div>` : ''}
+            <div style="position: absolute; bottom: 10px; right: 10px; opacity: ${pts ? 0.9 : 0.15};">
+              ${MiniChart(pts || [1, 1.1, 1.05, 1.08, 1.03, 1.06, 1.04], up, MINI_W, MINI_H)}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+    
+    function renderDashboardNews() {
+      const container = document.getElementById('dashboardNews');
+      const latest = getSortedNews(CRYPTO_NEWS).slice(0, 4);
+      container.innerHTML = latest.map(n => renderNewsCard(n)).join('');
+    }
+
+    function getLatestReportEntry() {
+      const buckets = [
+        { key: 'monthly', label: 'Mensual' },
+        { key: 'news', label: 'Noticias' },
+        { key: 'coins', label: 'Monedas' },
+      ];
+      let latest = null;
+      for (const bucket of buckets) {
+        const list = app.reports[bucket.key] || [];
+        for (const item of list) {
+          const ts = new Date(item.uploadedAt).getTime();
+          if (!Number.isFinite(ts)) continue;
+          if (!latest || ts > latest.ts) latest = { ...item, category: bucket.key, categoryLabel: bucket.label, ts };
+        }
+      }
+      return latest;
+    }
+
+    function renderDashboardLatestReport() {
+      const container = document.getElementById('dashboardLatestReport');
+      if (!container) return;
+      const latest = getLatestReportEntry();
+      if (!latest) {
+        container.innerHTML = `<div class="dashboard-latest-report empty">No hay PDFs disponibles todavía.</div>`;
+        return;
+      }
+      const dateLabel = new Date(latest.uploadedAt).toLocaleDateString('es-ES');
+      const previewSrc = safeReportUrl(latest.url);
+      container.innerHTML = `
+        <article class="dashboard-latest-report">
+          <div class="dashboard-latest-preview-wrap">
+            <iframe class="dashboard-latest-preview" src="${escapeAttr((previewSrc || '') + '#page=1&view=FitH&toolbar=0&navpanes=0&scrollbar=0')}" title="Vista previa ${escapeAttr(latest.name)}" scrolling="no"></iframe>
+          </div>
+          <div class="dashboard-latest-meta">
+            <span class="dashboard-latest-badge">${escapeHtml(latest.categoryLabel)}</span>
+            <span class="dashboard-latest-date">${escapeHtml(dateLabel)}</span>
+          </div>
+          <div class="dashboard-latest-title" title="${escapeAttr(latest.name)}">${escapeHtml(latest.name)}</div>
+          <div class="dashboard-latest-sub">PDF · ${formatFileSize(latest.size)}</div>
+          <button class="refresh-btn" style="margin-top:10px;" data-report-open="1" data-report-category="${escapeAttr(latest.category)}" data-report-id="${escapeAttr(latest.id)}">
+            <span>↗</span> ABRIR PDF
+          </button>
+        </article>
+      `;
+    }
+
+    function renderNewsCard(n, compact = false) {
+      const safeUrl = safeHttpUrl(n.url);
+      const category = escapeHtml(inferNewsCategory(n));
+      const impact = n.impact === "alto" || n.impact === "medio" || n.impact === "bajo" ? n.impact : "medio";
+      const time = escapeHtml(n.time);
+      const title = escapeHtml(n.title);
+      const summary = escapeHtml(n.summary);
+      const compactSummary = compact && summary.length > 200 ? `${summary.slice(0, 200)}...` : summary;
+      const sourceHtml = safeUrl
+        ? `<span class="news-source"><a href="${escapeAttr(safeUrl)}" target="_blank" rel="noopener noreferrer">↗ ver fuente</a></span>`
+        : '<span class="news-source">fuente no disponible</span>';
+      return `
+        <div class="news-card${safeUrl ? ' news-clickable' : ''}"${safeUrl ? ` data-news-url="${escapeAttr(safeUrl)}"` : ''}>
+          <div class="news-header">
+            <span class="news-category ${impact}">${category}</span>
+            <span class="news-time">${time}</span>
+            ${sourceHtml}
+          </div>
+          <div class="news-title${safeUrl ? ' news-title-link' : ''}" style="cursor:${safeUrl ? 'pointer' : 'default'};">${title}</div>
+          <div class="news-summary">${compactSummary}</div>
+        </div>
+      `;
+    }
+
+    function renderNewsPanel() {
+      // Filter buttons
+      const filterContainer = document.getElementById('newsCategoryFilter');
+      const cats = ["TODOS", ...NEWS_CATEGORY_ORDER];
+      filterContainer.innerHTML = cats.map(c => `
+        <button data-news-category="${escapeAttr(c)}" style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; padding: 6px 14px; border-radius: 4px; border: 1px solid; cursor: pointer; transition: all 0.2s; border-color: ${app.newsFilter === c ? '#f7931a' : '#1a1a2e'}; background: ${app.newsFilter === c ? '#f7931a18' : 'transparent'}; color: ${app.newsFilter === c ? '#f7931a' : '#555'};">
+          ${escapeHtml(c)}
+        </button>
+      `).join('');
+      
+      // News grid
+      const newsGrid = document.getElementById('newsGrid');
+      if (app.newsFilter === "TODOS") {
+        newsGrid.classList.add('news-grid-grouped');
+        newsGrid.innerHTML = NEWS_CATEGORY_ORDER.map(cat => {
+          const grouped = getSortedNews(CRYPTO_NEWS.filter(n => inferNewsCategory(n) === cat));
+          if (grouped.length === 0) return '';
+          return `
+            <section class="news-group">
+              <div class="news-group-header">
+                <div class="news-group-title">${escapeHtml(cat)}</div>
+                <div class="news-group-count">${grouped.length} noticias</div>
+              </div>
+              <div class="news-group-grid">
+                ${grouped.map(n => renderNewsCard(n, true)).join('')}
+              </div>
+            </section>
+          `;
+        }).join('');
+      } else {
+        newsGrid.classList.remove('news-grid-grouped');
+        const filtered = getSortedNews(CRYPTO_NEWS.filter(n => inferNewsCategory(n) === app.newsFilter));
+        newsGrid.innerHTML = filtered.map(n => renderNewsCard(n)).join('');
+      }
+    }
+    
+    function renderMarketsPanel() {
+      renderMetricsGrid('metricsGrid', [
+        { label: "DOMINANCIA BTC", value: "~52%", color: "#f7931a", sub: "estimación mar 2026" },
+        { label: "MIEDO / CODICIA", value: "28 · MIEDO", color: "#ff4d6d", sub: "corrección activa" },
+        { label: "RWA TOKENIZADOS", value: ">5.000M€", color: "#00d084", sub: "activos on-chain" },
+        { label: "TVL DeFi GLOBAL", value: "~95.000M€", color: "#a855f7", sub: "estimación" },
+      ]);
+      
+      if (!app.marketList || app.marketList.length === 0) {
+        // fetch data first time
+        loadMarketList().then(renderMarketsTable);
+      } else {
+        renderMarketsTable();
+      }
+    }
+    
+    function renderMetricsGrid(containerId, metrics) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = metrics.map(c => `
+        <div class="metric-card" style="border-top: 2px solid ${c.color};">
+          <div class="metric-label">${c.label}</div>
+          <div class="metric-value" style="color: ${c.color};">${c.value}</div>
+          <div class="metric-sub">${c.sub}</div>
+        </div>
+      `).join('');
+    }
+    
+    function renderMarketsTable() {
+      const table = document.getElementById('marketsTable');
+      if (!app.marketList || app.marketList.length === 0) {
+        table.innerHTML = '<div style="padding:20px; text-align:center; color:#888;">Cargando datos de mercados...</div>';
+        return;
+      }
+
+      const headerRow = `
+        <div class="table markets-header">
+          <div class="table-header-cell">#</div>
+          <div class="table-header-cell">NOMBRE</div>
+          <div class="table-header-cell">PRECIO EUR</div>
+          <div class="table-header-cell">CAMBIO 24H</div>
+          <div class="table-header-cell">7D</div>
+          <div class="table-header-cell">CAPITALIZACIÓN</div>
+        </div>
+      `;
+
+      const rows = app.marketList.map((c, i) => {
+        const sym = String(c.symbol || '').toUpperCase();
+        const up = c.price_change_percentage_24h >= 0;
+        const pts = c.sparkline_in_7d?.price;
+        const fallbackLogo = `https://cryptoicons.org/api/icon/${sym.toLowerCase()}/32`;
+        const logoSrc = safeHttpUrl(c.image) || fallbackLogo;
+
+        return `
+          <div class="markets-row">
+            <div class="table-number">${c.market_cap_rank || i + 1}</div>
+            <div class="table-name">
+              <img src="${escapeAttr(logoSrc)}" data-fallback-src="${escapeAttr(buildSymbolFallbackIcon(sym))}" alt="${escapeAttr(sym)}" class="asset-logo" loading="lazy">
+              <div>
+                <div class="table-name-text">${escapeHtml(c.name)}</div>
+                <div class="table-symbol-small">${escapeHtml(sym)}</div>
+              </div>
+            </div>
+            <div class="table-price">
+              ${fmtEurSmart(c.current_price)}
+            </div>
+            <div class="table-change ${up ? 'up' : 'down'}">
+              ${up ? '▲' : '▼'} ${fmtPct(c.price_change_percentage_24h)}
+            </div>
+            <div class="table-sparkline">
+              ${MiniChart(pts, up, MINI_W, MINI_H)}
+            </div>
+            <div class="table-marketcap">
+              ${fmtEur(c.market_cap, 0)}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      table.innerHTML = headerRow + rows;
+    }
+    
+    function renderPortfolioPanel() {
+      renderPortfolioMetrics();
+      renderPortfolioTable();
+    }
+    
+    function renderPortfolioMetrics() {
+      const enriched = app.assets.map(a => {
+        const d = app.prices[a.ticker];
+        const price = d?.eur ?? null;
+        const value = price != null ? a.units * price : null;
+        const invested = a.cost;
+        const gain = value != null ? value - invested : null;
+        const roiPct = calcRoiPct(value, a.cost);
+        return { ...a, price, value, invested, gain, roiPct };
+      });
+      
+      const tv = enriched.reduce((s, a) => s + (a.value ?? 0), 0);
+      const ti = enriched.reduce((s, a) => s + a.invested, 0);
+      const tg = tv - ti;
+      const tp = ti > 0 ? (tg / ti) * 100 : 0;
+      const best = [...enriched].filter(a => a.roiPct != null).sort((a,b) => b.roiPct - a.roiPct)[0];
+      
+      renderMetricsGrid('portfolioMetrics', [
+        { label: "VALOR TOTAL", value: fmtEur(tv, 0), color: "#00a8ff", sub: `${app.assets.length} posiciones` },
+        { label: "CAPITAL INVERTIDO", value: fmtEur(ti, 0), color: "#888", sub: "suma de COSTE €" },
+        { label: "GANANCIA / PÉRDIDA", value: `${tg >= 0 ? "+" : "-"}${fmtEur(Math.abs(tg),0)}`, color: tg>=0?"#00d084":"#ff4d6d", sub: `${fmt(tp)}% retorno` },
+        { label: "MEJOR ACTIVO", value: best ? best.ticker : "—", color: "#a855f7", sub: best ? `${best.roiPct >= 0 ? "+" : ""}${fmt(best.roiPct)}% ROI` : "" },
+      ]);
+    }
+
+    function resolveCryptoLogo(ticker) {
+      const t = String(ticker || '').toUpperCase();
+      const fromMarket = app.marketList.find(m => String(m.symbol || '').toUpperCase() === t)?.image;
+      return safeHttpUrl(fromMarket) || `https://cryptoicons.org/api/icon/${t.toLowerCase()}/32`;
+    }
+    
+    function renderPortfolioTable() {
+      const table = document.getElementById('portfolioTable');
+      const portfolioGridCols = 'minmax(80px, 0.8fr) minmax(220px, 1.8fr) minmax(110px, 1fr) minmax(120px, 1.1fr) minmax(150px, 1.2fr) minmax(150px, 1.2fr) minmax(110px, 0.9fr) minmax(160px, 1.4fr)';
+      
+      const enriched = app.assets.map(a => {
+        const d = app.prices[a.ticker];
+        const price = d?.eur ?? null;
+        const value = price != null ? a.units * price : null;
+        const invested = a.cost;
+        const gain = value != null ? value - invested : null;
+        const roiPct = calcRoiPct(value, a.cost);
+        const up = roiPct != null ? roiPct >= 0 : true;
+        // ROI chart: starts near 24h-ago ROI and ends exactly at current ROI.
+        let roiPts = null;
+        if (d) {
+          const avgCostPerUnit = a.units > 0 ? (a.cost / a.units) : null;
+          if (avgCostPerUnit && avgCostPerUnit > 0) {
+            roiPts = buildRoiSeries(d.eur, d.change24h, avgCostPerUnit, 14);
+          }
+        }
+        return { ...a, price, value, invested, gain, roiPct, up, roiPts };
+      });
+      
+      const headerRow = `
+        <div class="table-header" style="grid-template-columns: ${portfolioGridCols}; width: 100%; column-gap: 14px;">
+          <div class="table-header-cell">TICKER</div>
+          <div class="table-header-cell">NOMBRE</div>
+          <div class="table-header-cell" style="text-align: right;">UNIDADES</div>
+          <div class="table-header-cell" style="text-align: right;">COSTE €</div>
+          <div class="table-header-cell" style="text-align: right;">PRECIO EUR</div>
+          <div class="table-header-cell" style="text-align: right;">VALOR EUR</div>
+          <div class="table-header-cell" style="text-align: right;">ROI %</div>
+          <div class="table-header-cell" style="text-align: center;">7D</div>
+        </div>
+      `;
+      
+      const rows = enriched.map((a, i) => {
+        const logoSrc = resolveCryptoLogo(a.ticker);
+        const safeTicker = escapeAttr(a.ticker);
+        return `
+        <div class="table-row" style="grid-template-columns: ${portfolioGridCols}; width: 100%; column-gap: 14px; padding: 16px 20px;">
+          <div class="table-symbol">${escapeHtml(a.ticker)}</div>
+          <div class="table-name" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; min-width: 0;">
+            <div style="display: flex; align-items: center; gap: 8px; min-width: 0;">
+              <img src="${escapeAttr(logoSrc)}" data-fallback-src="${escapeAttr(buildSymbolFallbackIcon(a.ticker))}" alt="${safeTicker}" class="asset-logo" loading="lazy">
+              <div class="table-name-text" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(COIN_META[a.ticker]?.name || a.ticker)}</div>
+            </div>
+            <div style="display: flex; gap: 4px; flex-shrink: 0;">
+              <button title="Editar posición" data-asset-action="edit" data-asset-ticker="${safeTicker}" class="btn-small btn-edit" style="display:inline-flex;align-items:center;justify-content:center;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 20h4l10-10-4-4L4 16v4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m12 6 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </button>
+              <button title="Eliminar posición" data-asset-action="delete" data-asset-ticker="${safeTicker}" class="btn-small btn-delete" style="display:inline-flex;align-items:center;justify-content:center;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 7h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M9 7V5h6v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M8 7l1 12h6l1-12" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+          </div>
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #e0e0e0; text-align: right; white-space: nowrap;">${a.units}</div>
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #666; text-align: right; white-space: nowrap;">${fmtEur(a.cost)}</div>
+          <div class="table-price">
+            ${a.price ? fmtEur(a.price) : '<span style="animation: pulse 1.5s infinite;">···</span>'}
+          </div>
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #e0e0e0; font-weight: 600; text-align: right; white-space: nowrap;">
+            ${a.value != null ? fmtEur(a.value) : "···"}
+          </div>
+          <div class="table-change ${a.up ? 'up' : 'down'}">
+            ${a.roiPct != null ? `${a.up?"+":""}${fmt(a.roiPct)}%` : "···"}
+          </div>
+          <div style="display: flex; justify-content: center;">${MiniChart(a.roiPts || [0,-1.2,-0.4,0.3,0.1,0.7,1.1], a.up, DETAIL_W, DETAIL_H)}</div>
+        </div>
+      `}).join('');
+      
+      table.innerHTML = headerRow + rows;
+    }
+
+    function formatFileSize(bytes) {
+      if (!bytes || bytes <= 0) return "0 KB";
+      const kb = bytes / 1024;
+      if (kb < 1024) return `${kb.toFixed(1)} KB`;
+      return `${(kb / 1024).toFixed(2)} MB`;
+    }
+
+    function switchReportsCategory(category) {
+      app.reports.active = category;
+      renderReportsPanel();
+    }
+
+    function inferReportDateFromPath(path) {
+      const baseName = (path.split('/').pop() || '').toUpperCase();
+      const normalized = baseName
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^A-Z0-9 ]/g, ' ');
+
+      const monthMap = {
+        ENERO: 0, JAN: 0, JANUARY: 0,
+        FEBRERO: 1, FEB: 1, FEBRUARY: 1,
+        MARZO: 2, MAR: 2, MARCH: 2,
+        ABRIL: 3, ABR: 3, APR: 3, APRIL: 3,
+        MAYO: 4, MAY: 4,
+        JUNIO: 5, JUN: 5, JUNE: 5,
+        JULIO: 6, JUL: 6, JULY: 6,
+        AGOSTO: 7, AGO: 7, AUG: 7, AUGUST: 7,
+        SEPTIEMBRE: 8, SETIEMBRE: 8, SEP: 8, SEPT: 8, SEPTEMBER: 8,
+        OCTUBRE: 9, OCT: 9, OCTOBER: 9,
+        NOVIEMBRE: 10, NOV: 10, NOVEMBER: 10,
+        DICIEMBRE: 11, DIC: 11, DEC: 11, DECEMBER: 11,
+      };
+
+      const yearMatches = normalized.match(/\b(20\d{2})\b/g) || [];
+      let year = null;
+      if (yearMatches.length > 0) {
+        year = parseInt(yearMatches[yearMatches.length - 1], 10);
+      } else {
+        const pathYear = path.match(/\/(20\d{2})\//);
+        if (pathYear) year = parseInt(pathYear[1], 10);
+      }
+      if (!year || Number.isNaN(year)) year = 1970;
+
+      const tokens = normalized.split(/\s+/).filter(Boolean);
+      let month = 0;
+      for (const token of tokens) {
+        if (monthMap[token] != null) {
+          month = monthMap[token];
+          break;
+        }
+      }
+
+      return new Date(year, month, 1);
+    }
+
+    function loadReportsFromFolderConfig(category = null) {
+      const categories = category ? [category] : ['monthly', 'news', 'coins'];
+      categories.forEach(cat => {
+        const paths = REPORTS_STATIC_PATHS[cat] || [];
+        const sorted = [...paths].sort((a, b) => {
+          const ta = inferReportDateFromPath(a).getTime();
+          const tb = inferReportDateFromPath(b).getTime();
+          if (tb !== ta) return tb - ta;
+          return a.localeCompare(b, 'es', { sensitivity: 'base' });
+        });
+
+        app.reports[cat] = sorted.map((path, index) => ({
+          id: `${cat}-${index}-${path.length}`,
+          name: decodeURIComponent(path.split('/').pop()),
+          size: 0,
+          uploadedAt: inferReportDateFromPath(path),
+          url: encodeURI(path),
+        }));
+        app.reports.page[cat] = 0;
+      });
+      renderReportsPanel();
+      renderDashboardLatestReport();
+    }
+
+    function addReportFiles(category, fileList) {
+      const files = Array.from(fileList || []);
+      const pdfs = files.filter(f =>
+        (f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf')) &&
+        f.size > 0 &&
+        f.size <= MAX_PDF_SIZE_BYTES
+      );
+      if (pdfs.length === 0) return;
+
+      pdfs.forEach(file => {
+        app.reports[category].unshift({
+          id: `${Date.now()}-${Math.floor(Math.random() * 1000000)}`,
+          name: file.name,
+          size: file.size,
+          uploadedAt: new Date(),
+          url: URL.createObjectURL(file),
+        });
+      });
+
+      app.reports.page[category] = 0;
+      renderReportsPanel();
+      renderDashboardLatestReport();
+    }
+
+    function changeReportsPage(category, delta) {
+      const totalPages = Math.max(1, Math.ceil(app.reports[category].length / REPORTS_PAGE_SIZE));
+      const next = Math.min(totalPages - 1, Math.max(0, app.reports.page[category] + delta));
+      app.reports.page[category] = next;
+      renderReportsPanel();
+    }
+
+    function openReportPdf(category, id) {
+      const report = app.reports[category].find(r => r.id === id);
+      if (!report) return;
+      const safeUrl = safeReportUrl(report.url);
+      if (!safeUrl) return;
+      window.open(safeUrl, '_blank', 'noopener,noreferrer');
+    }
+
+    function renderReportGrid(category, gridId, pageInfoId, prevBtnId, nextBtnId) {
+      const list = app.reports[category];
+      const totalPages = Math.max(1, Math.ceil(list.length / REPORTS_PAGE_SIZE));
+      const safePage = Math.min(app.reports.page[category], totalPages - 1);
+      app.reports.page[category] = safePage;
+      const start = safePage * REPORTS_PAGE_SIZE;
+      const pageItems = list.slice(start, start + REPORTS_PAGE_SIZE);
+
+      const grid = document.getElementById(gridId);
+      if (pageItems.length === 0) {
+        grid.innerHTML = `<div class="reports-empty">No hay PDFs todavía en esta subsección.</div>`;
+      } else {
+        grid.innerHTML = pageItems.map(item => `
+          <article class="report-card">
+            <div class="report-preview-wrap">
+              <iframe class="report-preview" src="${escapeAttr((safeReportUrl(item.url) || '') + '#page=1&view=FitH&toolbar=0&navpanes=0&scrollbar=0')}" title="Vista previa ${escapeAttr(item.name)}" scrolling="no"></iframe>
+            </div>
+            <div class="report-title" title="${escapeAttr(item.name)}">${escapeHtml(item.name)}</div>
+            <div class="report-meta">PDF · ${formatFileSize(item.size)}</div>
+            <div class="report-meta">Subido: ${new Date(item.uploadedAt).toLocaleDateString('es-ES')}</div>
+            <button class="btn-small btn-edit report-open-btn" title="Abrir PDF" data-report-open="1" data-report-category="${escapeAttr(category)}" data-report-id="${escapeAttr(item.id)}">↗</button>
+          </article>
+        `).join('');
+      }
+
+      document.getElementById(pageInfoId).textContent = `Página ${safePage + 1} de ${totalPages}`;
+      document.getElementById(prevBtnId).disabled = safePage === 0;
+      document.getElementById(nextBtnId).disabled = safePage >= totalPages - 1;
+    }
+
+    function renderReportsPanel() {
+      const active = app.reports.active;
+      document.querySelectorAll('.reports-category-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.reportCat === app.reports.active);
+      });
+
+      document.getElementById('reports-monthly-section').classList.toggle('hidden', active !== 'monthly');
+      document.getElementById('reports-news-section').classList.toggle('hidden', active !== 'news');
+      document.getElementById('reports-coins-section').classList.toggle('hidden', active !== 'coins');
+
+      renderReportGrid('monthly', 'reportsMonthlyGrid', 'reportsMonthlyPageInfo', 'reportsMonthlyPrev', 'reportsMonthlyNext');
+      renderReportGrid('news', 'reportsNewsGrid', 'reportsNewsPageInfo', 'reportsNewsPrev', 'reportsNewsNext');
+      renderReportGrid('coins', 'reportsCoinsGrid', 'reportsCoinsPageInfo', 'reportsCoinsPrev', 'reportsCoinsNext');
+    }
+
+    function renderDictionaryPanel() {
+      const grid = document.getElementById('dictionaryGrid');
+      const count = document.getElementById('dictionaryCount');
+      const filter = document.getElementById('dictionaryCategoryFilter');
+      if (!grid || !count || !filter) return;
+
+      const query = normalizeSearchText(app.dictionaryQuery);
+      const selectedCategory = app.dictionaryCategory || 'TODAS';
+      const categories = ['TODAS', ...Array.from(new Set(DICTIONARY_TERMS.map(t => t.category))).sort((a, b) => a.localeCompare(b, 'es'))];
+
+      filter.innerHTML = categories.map(cat => `
+        <button data-dict-category="${escapeAttr(cat)}" class="dict-chip${selectedCategory === cat ? ' active' : ''}">
+          ${escapeHtml(cat)}
+        </button>
+      `).join('');
+
+      const filtered = DICTIONARY_TERMS.filter(item => {
+        if (selectedCategory !== 'TODAS' && item.category !== selectedCategory) return false;
+        if (!query) return true;
+        const haystack = normalizeSearchText(`${item.term} ${item.category} ${item.definition}`);
+        return haystack.includes(query);
+      });
+
+      count.textContent = `${filtered.length} términos`;
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="dashboard-latest-report empty">No hay términos para el filtro actual.</div>`;
+        return;
+      }
+      grid.innerHTML = filtered.map(item => `
+        <article class="dict-item">
+          <div class="dict-item-summary">
+            <span class="dict-item-term">${escapeHtml(item.term)}</span>
+            <span class="dict-item-cat">${escapeHtml(item.category)}</span>
+          </div>
+          <div class="dict-item-body">${escapeHtml(item.definition)}</div>
+        </article>
+      `).join('');
+    }
+    
+    // ────────────────────────────────────────────────────────────────────
+    // EVENT HANDLERS
+    // ────────────────────────────────────────────────────────────────────
+    
+    function switchTab(tabId) {
+      app.currentTab = tabId;
+      
+      // Hide all panels
+      document.getElementById('dashboard-panel').classList.add('hidden');
+      document.getElementById('news-panel').classList.add('hidden');
+      document.getElementById('markets-panel').classList.add('hidden');
+      document.getElementById('portfolio-panel').classList.add('hidden');
+      document.getElementById('reports-panel').classList.add('hidden');
+      document.getElementById('dictionary-panel').classList.add('hidden');
+      
+      // Show selected panel
+      document.getElementById(tabId + '-panel').classList.remove('hidden');
+      
+      // Update nav buttons
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        if (btn.dataset.tab === tabId) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+      
+      // Render specific content
+      if (tabId === 'dashboard') renderDashboard();
+      if (tabId === 'news') renderNewsPanel();
+      if (tabId === 'markets') renderMarketsPanel();
+      if (tabId === 'portfolio') renderPortfolioPanel();
+      if (tabId === 'reports') renderReportsPanel();
+      if (tabId === 'dictionary') renderDictionaryPanel();
+    }
+        // mapping from our ticker symbols to CoinGecko coin ids
+    const COINGECKO_IDS = {
+      BTC: 'bitcoin',
+      ETH: 'ethereum',
+      LINK: 'chainlink',
+      SOL: 'solana',
+      AVAX: 'avalanche-2',
+      AAVE: 'aave',
+      INJ: 'injective-protocol',
+      ARB: 'arbitrum',
+      UNI: 'uniswap',
+      DOT: 'polkadot',
+      CC: 'canton-network',
+      HYPE: 'hyperliquid',
+    };
+    const BINANCE_SYMBOLS = {
+      BTC: 'BTCEUR',
+      ETH: 'ETHEUR',
+      LINK: 'LINKEUR',
+      SOL: 'SOLEUR',
+      AVAX: 'AVAXEUR',
+      AAVE: 'AAVEEUR',
+      INJ: 'INJEUR',
+      ARB: 'ARBEUR',
+      UNI: 'UNIEUR',
+      DOT: 'DOTEUR',
+    };
+    const EMERGENCY_CRYPTO_PRICES = {
+      BTC: { eur: 83000, change24h: 0.4 },
+      ETH: { eur: 4200, change24h: -0.3 },
+      LINK: { eur: 20.5, change24h: 0.8 },
+      SOL: { eur: 165, change24h: 1.1 },
+      AVAX: { eur: 39, change24h: -0.7 },
+      AAVE: { eur: 155, change24h: 0.2 },
+      INJ: { eur: 29, change24h: 0.5 },
+      ARB: { eur: 1.8, change24h: -0.2 },
+      UNI: { eur: 11.4, change24h: 0.1 },
+      DOT: { eur: 8.7, change24h: -0.4 },
+      CC: { eur: 0.13, change24h: -1.1 },
+      HYPE: { eur: 17.9, change24h: 2.4 },
+    };
+
+    async function fetchJsonWithTimeout(url, timeoutMs = 12000, retries = 1) {
+      let lastErr = null;
+      for (let attempt = 0; attempt <= retries; attempt++) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+        try {
+          const resp = await fetch(url, {
+            cache: 'no-store',
+            headers: { 'Accept': 'application/json' },
+            signal: controller.signal,
+          });
+          if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+          return await resp.json();
+        } catch (err) {
+          lastErr = err;
+          if (attempt < retries) {
+            await new Promise(r => setTimeout(r, 450 * (attempt + 1)));
+          }
+        } finally {
+          clearTimeout(timeoutId);
+        }
+      }
+      throw lastErr || new Error('fetch failed');
+    }
+
+    async function loadCryptoFromBinance() {
+      const pairs = TICKERS.map(sym => ({ sym, pair: BINANCE_SYMBOLS[sym] })).filter(x => !!x.pair);
+      const out = {};
+      TICKERS.forEach(sym => { out[sym] = null; });
+
+      let okCount = 0;
+      // Preferred path: one request with all pairs, then filter what we need.
+      try {
+        const all = await fetchJsonWithTimeout('https://api.binance.com/api/v3/ticker/24hr', 13000, 1);
+        if (Array.isArray(all)) {
+          const byPair = new Map(all.map(row => [row?.symbol, row]));
+          pairs.forEach(p => {
+            const row = byPair.get(p.pair);
+            const eur = Number(row?.lastPrice);
+            const ch = Number(row?.priceChangePercent);
+            if (Number.isFinite(eur)) {
+              out[p.sym] = { eur, change24h: Number.isFinite(ch) ? ch : 0 };
+              okCount++;
+            }
+          });
+        }
+      } catch (err) {
+        console.warn('Binance batch endpoint failed, trying per-symbol requests:', err);
+      }
+
+      // Fallback path: per-symbol requests for any missing symbols.
+      const missing = pairs.filter(p => !out[p.sym]);
+      if (missing.length > 0) {
+        const responses = await Promise.allSettled(
+          missing.map(async (p) => {
+            const j = await fetchJsonWithTimeout(`https://api.binance.com/api/v3/ticker/24hr?symbol=${p.pair}`, 12000, 1);
+            const eur = Number(j?.lastPrice);
+            const ch = Number(j?.priceChangePercent);
+            return { sym: p.sym, eur, ch };
+          })
+        );
+        responses.forEach(res => {
+          if (res.status !== 'fulfilled') return;
+          const { sym, eur, ch } = res.value;
+          if (!Number.isFinite(eur)) return;
+          if (!out[sym]) okCount++;
+          out[sym] = { eur, change24h: Number.isFinite(ch) ? ch : 0 };
+        });
+      }
+
+      return okCount > 0 ? out : null;
+    }
+
+    async function loadPrices() {
+      // ui state
+      app.loading = true;
+      document.getElementById('refreshIcon').classList.add('spin');
+      document.getElementById('refreshIcon2').classList.add('spin');
+      document.getElementById('refreshIcon3').classList.add('spin');
+      document.getElementById('refreshBtn').disabled = true;
+      document.getElementById('refreshBtn2').disabled = true;
+      document.getElementById('refreshBtn3').disabled = true;
+      document.getElementById('statusMessage').textContent = 'Cargando precios...';
+
+      const prevCrypto = { ...app.prices };
+      const hadPrevCrypto = Object.keys(prevCrypto).length > 0;
+      const warnings = [];
+      let cryptoUpdated = false;
+
+      // 1) Crypto prices (principal)
+      try {
+        const simpleIds = Object.values(COINGECKO_IDS).join(',');
+        const simpleUrl = `https://api.coingecko.com/api/v3/simple/price?ids=${simpleIds}&vs_currencies=eur&include_24hr_change=true&ts=${Date.now()}`;
+        console.log('loadPrices -> fetching simple price:', simpleUrl);
+        const sjson = await fetchJsonWithTimeout(simpleUrl, 15000, 2);
+
+        const nextPrices = {};
+        let validCount = 0;
+        for (const sym of TICKERS) {
+          const id = COINGECKO_IDS[sym];
+          const entry = sjson[id];
+          if (entry && typeof entry.eur === 'number') {
+            nextPrices[sym] = {
+              eur: entry.eur,
+              change24h: entry.eur_24h_change || 0,
+            };
+            validCount++;
+          } else {
+            nextPrices[sym] = null;
+          }
+        }
+        if (validCount === 0) throw new Error('CoinGecko sin datos útiles');
+        app.prices = nextPrices;
+        cryptoUpdated = true;
+
+        // extended markets list for the "MERCADOS" tab
+        await loadMarketList().catch(err => {
+          console.warn('market list fetch failed', err);
+        });
+      } catch (err) {
+        console.error('Crypto fetch failed:', err);
+        warnings.push('cripto/coingecko');
+        try {
+          const binancePrices = await loadCryptoFromBinance();
+          if (binancePrices) {
+            app.prices = binancePrices;
+            cryptoUpdated = true;
+            warnings.push('coingecko caído, usando binance');
+            await loadMarketList().catch(e => console.warn('market list fetch failed', e));
+          } else if (hadPrevCrypto) {
+            app.prices = prevCrypto;
+          }
+        } catch (err2) {
+          console.error('Binance fetch failed:', err2);
+          warnings.push('cripto/binance');
+          if (hadPrevCrypto) {
+            app.prices = prevCrypto;
+          }
+        }
+      }
+
+      // 2) Fallback values for watchlist + indices (if empty)
+      if (!app.tradfiPrices || Object.keys(app.tradfiPrices).length === 0) {
+        app.tradfiPrices = {
+          AAPL: { eur: 150, change24h: 0.8, currency: 'USD' },
+          MSFT: { eur: 310, change24h: -1.1, currency: 'USD' },
+          AMZN: { eur: 120, change24h: 0.4, currency: 'USD' },
+          TSLA: { eur: 800, change24h: 2.3, currency: 'USD' },
+          JPM:  { eur: 100, change24h: -0.5, currency: 'USD' },
+          GOOGL:{ eur: 125, change24h: 1.2, currency: 'USD' },
+        };
+      }
+      if (!app.indexPrices || Object.keys(app.indexPrices).length === 0) {
+        app.indexPrices = {
+          '^GSPC':  { value: 5100, change24h: 0.3 },
+          '^IXIC':  { value: 16000, change24h: 0.5 },
+          '^DJI':   { value: 39000, change24h: -0.1 },
+          '^RUT':   { value: 2050, change24h: 0.2 },
+          '^VIX':   { value: 15.5, change24h: -1.2 },
+          '^GDAXI': { value: 18500, change24h: 0.4 },
+        };
+      }
+
+      // 3) Yahoo stocks + indices (secundario, no debe romper todo)
+      try {
+        const allYahooSymbols = [...TRADFI_TICKERS, ...INDEX_TICKERS];
+        const yahooSymbolsParam = encodeURIComponent(allYahooSymbols.join(','));
+        const yahooUrl = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${yahooSymbolsParam}`;
+        const yahooResp = await fetch(yahooUrl, { cache: 'no-store' });
+        if (!yahooResp.ok) throw new Error(`HTTP ${yahooResp.status} from yahoo quote`);
+        const yahooJson = await yahooResp.json();
+
+        const nextTradfi = {};
+        const nextIndexes = {};
+        const rows = yahooJson?.quoteResponse?.result || [];
+        rows.forEach(r => {
+          if (TRADFI_META[r.symbol]) {
+            nextTradfi[r.symbol] = {
+              eur: r.regularMarketPrice,
+              change24h: r.regularMarketChangePercent,
+              currency: r.currency || 'USD'
+            };
+          }
+          if (INDEX_META[r.symbol]) {
+            nextIndexes[r.symbol] = {
+              value: r.regularMarketPrice,
+              change24h: r.regularMarketChangePercent,
+            };
+          }
+        });
+
+        if (Object.keys(nextTradfi).length > 0) app.tradfiPrices = nextTradfi;
+        if (Object.keys(nextIndexes).length > 0) app.indexPrices = nextIndexes;
+      } catch (err) {
+        console.warn('Yahoo fetch failed:', err);
+        warnings.push('índices/acciones');
+      }
+
+      app.lastUpdate = new Date();
+      if (cryptoUpdated) {
+        const suffix = warnings.length ? ` (parcial: ${warnings.join(', ')})` : '';
+        document.getElementById('statusMessage').textContent = 'Última actualización: ' + app.lastUpdate.toLocaleTimeString() + suffix;
+      } else if (hadPrevCrypto) {
+        document.getElementById('statusMessage').textContent = 'Sin conexión con cripto API; mostrando últimos datos válidos.';
+      } else {
+        app.prices = { ...EMERGENCY_CRYPTO_PRICES };
+        document.getElementById('statusMessage').textContent = 'Sin conexión a APIs; mostrando precios de respaldo.';
+      }
+
+      app.loading = false;
+      document.getElementById('refreshIcon').classList.remove('spin');
+      document.getElementById('refreshIcon2').classList.remove('spin');
+      document.getElementById('refreshIcon3').classList.remove('spin');
+      document.getElementById('refreshBtn').disabled = false;
+      document.getElementById('refreshBtn2').disabled = false;
+      document.getElementById('refreshBtn3').disabled = false;
+
+      renderTicker();
+      renderDashboard();
+      renderMarketsPanel();
+      renderPortfolioPanel();
+    }
+    
+    // fetch top coins from CoinGecko for the markets panel
+    async function loadMarketList() {
+      try {
+        // top 25 by market cap in EUR, include 7d sparkline
+        const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=25&page=1&sparkline=true&price_change_percentage=24h`;
+        const json = await fetchJsonWithTimeout(url, 15000, 2);
+        // if we got a valid array, use it
+        if (Array.isArray(json) && json.length > 0) {
+          app.marketList = json;
+          return;
+        }
+        // otherwise fall back below to generate a list from available prices
+      } catch (err) {
+        console.error('Error fetching market list:', err);
+        // leave existing list if available
+      }
+      // fallback: build a minimal marketList from our known TICKERS and app.prices
+      const fallback = TICKERS.map((sym, i) => {
+        const p = app.prices[sym];
+        const current_price = p?.eur ?? null;
+        const change = p?.change24h ?? 0;
+        return {
+          id: COINGECKO_IDS[sym] || sym.toLowerCase(),
+          symbol: sym.toLowerCase(),
+          name: COIN_META[sym]?.name || sym,
+          image: `https://cryptoicons.org/api/icon/${sym.toLowerCase()}/64`,
+          current_price,
+          price_change_percentage_24h: change,
+          market_cap: null,
+          market_cap_rank: i + 1,
+          sparkline_in_7d: { price: current_price ? makeSparkline(current_price, change, 7) : null }
+        };
+      });
+      app.marketList = fallback;
+    }
+    
+    function loadNews() {
+      // simulate fetching and keep stable category ordering
+      document.getElementById('refreshNewsIcon').classList.add('spin');
+      document.getElementById('refreshNewsBtn').disabled = true;
+      document.getElementById('statusMessage').textContent = 'Actualizando noticias...';
+      setTimeout(() => {
+        renderNewsPanel();
+        document.getElementById('refreshNewsIcon').classList.remove('spin');
+        document.getElementById('refreshNewsBtn').disabled = false;
+        document.getElementById('statusMessage').textContent = 'Noticias actualizadas';
+      }, 800);
+    }
+
+    function editAsset(ticker) {
+      // open modal prefilled to edit existing asset
+      showAddModal(ticker);
+    }
+    
+    function deleteAsset(ticker) {
+      app.assets = app.assets.filter(a => a.ticker !== ticker);
+      savePortfolioToStorage();
+      renderPortfolioPanel();
+    }
+    
+    // Modal functions
+    function showAddModal(ticker = null) {
+      // sometimes this is used as an event handler; ignore the event object
+      if (ticker && ticker instanceof Event) {
+        ticker = null;
+      }
+      app.editingTicker = ticker;
+      const modal = document.getElementById('addAssetModal');
+      const titleEl = modal.querySelector('.modal-title');
+      const subtitleEl = modal.querySelector('.modal-subtitle');
+      const tickerEl = document.getElementById('formTicker');
+      const unitsEl = document.getElementById('formUnits');
+      const costEl = document.getElementById('formCost');
+      const confirmBtn = document.getElementById('confirmAddBtn');
+
+      if (ticker) {
+        // editing mode
+        titleEl.textContent = 'EDITAR ACTIVO';
+        subtitleEl.textContent = ticker;
+        modal.classList.add('editing');
+        const asset = app.assets.find(a => a.ticker === ticker);
+        if (asset) {
+          tickerEl.value = asset.ticker;
+          unitsEl.value = asset.units;
+          costEl.value = asset.cost;
+          tickerEl.disabled = true;
+          confirmBtn.textContent = 'GUARDAR';
+        }
+      } else {
+        // adding new
+        titleEl.textContent = 'AÑADIR ACTIVO';
+        subtitleEl.textContent = '';
+        modal.classList.remove('editing');
+        tickerEl.disabled = false;
+        confirmBtn.textContent = 'CONFIRMAR';
+      }
+      modal.classList.add('active');
+    }
+    
+    function hideAddModal() {
+      const modal = document.getElementById('addAssetModal');
+      modal.classList.remove('active');
+      modal.classList.remove('editing');
+      const tickerEl = document.getElementById('formTicker');
+      const unitsEl = document.getElementById('formUnits');
+      const costEl = document.getElementById('formCost');
+      tickerEl.value = '';
+      unitsEl.value = '';
+      costEl.value = '';
+      tickerEl.disabled = false;
+      document.getElementById('formError').style.display = 'none';
+      app.editingTicker = null;
+    }
+    
+    function confirmAddAsset() {
+      const ticker = normalizeTicker(document.getElementById('formTicker').value);
+      const units = parseFlexibleNumber(document.getElementById('formUnits').value);
+      const cost = parseFlexibleNumber(document.getElementById('formCost').value);
+      const errorEl = document.getElementById('formError');
+      
+      if (!ticker || !units || !cost || units <= 0 || cost <= 0) {
+        errorEl.textContent = 'Rellena los campos con valores positivos y ticker valido.';
+        errorEl.style.display = 'block';
+        return;
+      }
+
+      if (app.editingTicker) {
+        // update existing asset
+        const asset = app.assets.find(a => a.ticker === app.editingTicker);
+        if (asset) {
+          asset.units = units;
+          asset.cost = cost;
+        }
+      } else {
+        // adding new asset, make sure ticker doesn't exist
+        if (app.assets.find(a => a.ticker === ticker)) {
+          errorEl.textContent = 'Ticker ya existe.';
+          errorEl.style.display = 'block';
+          return;
+        }
+        app.assets.push({ ticker, units, cost });
+      }
+
+      savePortfolioToStorage();
+      renderPortfolioPanel();
+      hideAddModal();
+    }
+
+    function handleDelegatedClick(event) {
+      const filterBtn = event.target.closest('[data-news-category]');
+      if (filterBtn) {
+        const nextFilter = filterBtn.dataset.newsCategory;
+        if (!nextFilter) return;
+        app.newsFilter = nextFilter;
+        renderNewsPanel();
+        return;
+      }
+
+      const dictFilterBtn = event.target.closest('[data-dict-category]');
+      if (dictFilterBtn) {
+        const nextCategory = dictFilterBtn.dataset.dictCategory;
+        if (!nextCategory) return;
+        app.dictionaryCategory = nextCategory;
+        renderDictionaryPanel();
+        return;
+      }
+
+      const assetActionBtn = event.target.closest('[data-asset-action]');
+      if (assetActionBtn) {
+        const ticker = normalizeTicker(assetActionBtn.dataset.assetTicker);
+        if (!ticker) return;
+        if (assetActionBtn.dataset.assetAction === 'edit') editAsset(ticker);
+        if (assetActionBtn.dataset.assetAction === 'delete') deleteAsset(ticker);
+        return;
+      }
+
+      const reportBtn = event.target.closest('[data-report-open]');
+      if (reportBtn) {
+        const category = reportBtn.dataset.reportCategory;
+        const id = reportBtn.dataset.reportId;
+        if (!category || !id) return;
+        openReportPdf(category, id);
+        return;
+      }
+
+      const anchor = event.target.closest('a[href]');
+      if (anchor) return;
+      const newsCard = event.target.closest('[data-news-url]');
+      if (newsCard) {
+        openExternalUrl(newsCard.dataset.newsUrl);
+      }
+    }
+
+    function handleImageError(event) {
+      const img = event.target;
+      if (!(img instanceof HTMLImageElement)) return;
+      if (!img.classList.contains('asset-logo') && !img.classList.contains('price-logo')) return;
+      const fallback = img.dataset.fallbackSrc;
+      if (fallback && img.src !== fallback) {
+        img.src = fallback;
+        return;
+      }
+      img.style.display = 'none';
+    }
+    
+    // ────────────────────────────────────────────────────────────────────
+    // INITIALIZATION
+    // ────────────────────────────────────────────────────────────────────
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      loadPortfolioFromStorage();
+
+      // Nav buttons
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+      });
+      document.addEventListener('click', handleDelegatedClick);
+      document.addEventListener('error', handleImageError, true);
+      
+      // Refresh buttons
+      document.getElementById('refreshBtn').addEventListener('click', loadPrices);
+      document.getElementById('refreshBtn2').addEventListener('click', loadPrices);
+      document.getElementById('refreshBtn3').addEventListener('click', loadPrices);
+      document.getElementById('refreshNewsBtn').addEventListener('click', loadNews);
+      
+      // Modal
+      document.getElementById('addAssetBtn').addEventListener('click', () => showAddModal());
+      document.getElementById('modalClose').addEventListener('click', hideAddModal);
+      document.getElementById('cancelAddBtn').addEventListener('click', hideAddModal);
+      document.getElementById('confirmAddBtn').addEventListener('click', confirmAddAsset);
+      document.getElementById('addAssetModal').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('addAssetModal')) hideAddModal();
+      });
+
+      // Reports
+      document.querySelectorAll('.reports-category-btn').forEach(btn => {
+        btn.addEventListener('click', () => switchReportsCategory(btn.dataset.reportCat));
+      });
+      document.getElementById('uploadMonthlyPdfBtn').addEventListener('click', () => {
+        document.getElementById('monthlyPdfInput').click();
+      });
+      document.getElementById('uploadNewsPdfBtn').addEventListener('click', () => {
+        document.getElementById('newsPdfInput').click();
+      });
+      document.getElementById('uploadCoinsPdfBtn').addEventListener('click', () => {
+        document.getElementById('coinsPdfInput').click();
+      });
+      document.getElementById('monthlyPdfInput').addEventListener('change', (e) => {
+        addReportFiles('monthly', e.target.files);
+        e.target.value = '';
+      });
+      document.getElementById('newsPdfInput').addEventListener('change', (e) => {
+        addReportFiles('news', e.target.files);
+        e.target.value = '';
+      });
+      document.getElementById('coinsPdfInput').addEventListener('change', (e) => {
+        addReportFiles('coins', e.target.files);
+        e.target.value = '';
+      });
+      document.getElementById('reportsMonthlyPrev').addEventListener('click', () => changeReportsPage('monthly', -1));
+      document.getElementById('reportsMonthlyNext').addEventListener('click', () => changeReportsPage('monthly', 1));
+      document.getElementById('reportsNewsPrev').addEventListener('click', () => changeReportsPage('news', -1));
+      document.getElementById('reportsNewsNext').addEventListener('click', () => changeReportsPage('news', 1));
+      document.getElementById('reportsCoinsPrev').addEventListener('click', () => changeReportsPage('coins', -1));
+      document.getElementById('reportsCoinsNext').addEventListener('click', () => changeReportsPage('coins', 1));
+
+      // Dictionary
+      document.getElementById('dictionarySearch').addEventListener('input', (e) => {
+        app.dictionaryQuery = e.target.value || '';
+        if (app.currentTab === 'dictionary') renderDictionaryPanel();
+      });
+      
+      // Clock
+      updateClock();
+      setInterval(updateClock, 1000);
+      
+      // Initial load
+      loadReportsFromFolderConfig();
+      loadPrices();
+      renderDictionaryPanel();
+    });
+  </script>
+</body>
+</html>
+
+
+
+
